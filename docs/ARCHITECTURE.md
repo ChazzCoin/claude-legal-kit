@@ -58,7 +58,7 @@ A firm home must know **who is working** before any work begins — to apply the
 
 ### The pieces
 
-- **`.claude/hooks/`** — the hook and setup scripts. Kit-managed, so `/sync` keeps them current. Shell, with python3 for JSON parsing — no external dependencies, the same rule as `bin/init`.
+- **`.claude/hooks/`** — the SessionStart hook (`session-start.js`) and the once-per-machine setup script (`setup-user.py`). Kit-managed, so `/sync` keeps them current. The hook is **Node.js** — Claude Code spawns it, and Node is the runtime guaranteed on every platform; the setup script is Python. No third-party packages. See §10 for the kit-wide runtime split.
 - **`.claude/settings.json`** — registers the hooks. **Kit-owned**: it ships with the kit and `/sync` keeps it current. A firm's own settings go in `.claude/settings.local.json` (gitignored, never synced, firm- and machine-local).
 - **`members/users.json`** — the **user directory** (the firm's "AD"): every user, their role, their member folder, their status. Firm data — it lives in the firm home, travels the git plane, is firm-visible. The kit ships only the *schema*; the real file is built by the setup script as people are onboarded. It is deliberately a small subset of a future permissions model, shaped so it can grow.
 - **`.claude/current-user`** — a per-machine pointer, gitignored: which user in `users.json` is on this machine. Just a pointer; the directory holds the detail.
@@ -70,7 +70,7 @@ A firm home must know **who is working** before any work begins — to apply the
 - **Known user** → injects identity, role, conduct mode, and setup pointers into the session. Claude starts already oriented to that person.
 - **Unknown user** → **hard-blocks the session** (`continue: false`) with a message pointing to the setup script. No identity, no session. This is the lock.
 
-**Setup script** (`.claude/hooks/setup-user.sh`) — a normal interactive script a person runs once in their terminal. A regular script *can* prompt; only hooks cannot. It asks who they are and their role, appends them to `users.json` (creating it if absent), and writes the per-machine `current-user` pointer. Normally this is done at machine onboarding; the hook's hard-block is the fail-safe for when it has not been.
+**Setup script** (`.claude/hooks/setup-user.py`) — a normal interactive script a person runs once in their terminal. A regular script *can* prompt; only hooks cannot. It asks who they are and their role, appends them to `users.json` (creating it if absent), and writes the per-machine `current-user` pointer. Normally this is done at machine onboarding; the hook's hard-block is the fail-safe for when it has not been.
 
 The AI is never in the identity loop. The hook resolves; the setup script asks; the AI only ever *receives* a resolved identity.
 
@@ -158,9 +158,9 @@ The `drives/` registry therefore records a **stable volume identifier** (volume 
 
 This layer must run identically on both platforms. The consequences:
 
-- Everything executable in it is **Python**, standard library only for v1 — the one runtime that is genuinely equal on both. No shell scripts.
-- SQLite access, hashing, directory walking, and path handling are all standard-library and behave identically on both.
-- `python3` is a setup prerequisite on both platforms — neither ships it ready to use — and its invocation differs (`python3` versus `python` / `py`); the tooling and skills account for both.
+- The indexer is **Python**, standard library only — SQLite, hashing, directory walking, and path handling are all stdlib and behave identically on both. No shell scripts.
+- The kit's runtime split, settled when this phase was built: code that **Claude Code spawns** (the identity hook) is **Node.js** — Claude Code is a Node application, so Node is the one runtime guaranteed present on every platform. Code that **a person or skill runs** (the indexer, `bin/`, `setup-user`) is **Python**, where the standard library carries SQLite and the rest. Neither bash nor a single Python interpreter name is reliable across both platforms; this split is.
+- `python3` is a setup prerequisite on both platforms — neither ships it ready to use — and its invocation differs (`python3` versus `python` / `py`); the tooling accounts for both (`bin/` ships `.cmd` shims for Windows).
 
 ### The pipeline is tiered
 
@@ -223,9 +223,14 @@ Before a release: run `bin/check-manifest`, and scan the tree for leaked specifi
 **Phase 3 — firm deployment** *(not kit work)*
 - Stand up a firm home with real firm data: `FIRM.md`, members and roles, `users.json`, the private firm repo, the drive registry, and a first `/sync`.
 
-**Phase 4 — the document management layer** *(designed; not built — §10. Kit work, independent of Phase 3.)*
-- The cross-platform Python indexer (Tier 0 crawl), `schema.sql`, and the `index.db` query layer with its JSONL durability export.
+**Phase 4 — the document management layer** *(engine built; management skills not yet — §10.)*
+
+Built:
+- The Tier 0 indexer (`.claude/tools/index/indexer.py`) and `schema.sql` — the cross-platform crawl that builds `index.db`: content-hash identity, incremental re-crawl, move and content-change detection, an append-only audit log, and the JSONL durability export.
 - The `drives/` registry reworked onto stable volume identifiers with runtime mount resolution; drive-relative paths in the index.
+- The kit's shell tooling converted off bash to the cross-platform runtime split (§10): the identity hook to Node.js, `bin/` and `setup-user` to Python with `.cmd` shims. This resolved the open question of whether Phase 4 also makes the *whole* kit cross-platform — it does; the kit ships no shell scripts.
+- `MANIFEST.json` entries for the index machinery and the drive template; `gitignore.template` ignores the firm's `index.db`.
+
+Not yet built:
 - The management skills: `/index`, locate, deduplicate, organize, matter-linking, collections.
-- New `MANIFEST.json` entries for the schema, the indexer, and the skills.
-- *Open decision:* whether this phase also begins converting the kit's existing shell tooling (the identity hooks, `bin/`) to Python — making the whole kit cross-platform — or ships as a cross-platform layer bolted onto a still-macOS-centric kit. The mandate that the kit run equally on both platforms argues for the former.
+- Deferred tiers — full-text search, OCR, content-based classification.
