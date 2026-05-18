@@ -54,6 +54,16 @@ After install: fill the `{{PLACEHOLDERS}}` in `CLAUDE.md` and `firm/FIRM.md`, ad
 
 From inside the firm home, run the `/sync` skill — or just ask Claude to **"load the latest kit updates."** It is a **one-way** sync, kit → firm: it fetches the kit, diffs every kit-managed file against the firm's copy, classifies drift (kit-only change / firm override / both changed / new / removed), and proposes changes file-by-file. It never auto-applies, never touches the firm's own files, and never silently overwrites a firm override. The pin in `foundation.json` advances on success.
 
+## Onboard a new firm member
+
+A firm home is usually a **private** git repository — a new member's computer can't clone it until it has been granted access. The kit handles this with a two-sided flow that never moves a private key:
+
+1. **Member side** — the new member runs [`bin/register-user`](bin/README.md) (`.sh` on macOS/Linux, `.ps1` on Windows) on their own computer. It lives in *this* public kit, so they can get it before they have any firm access. It generates an SSH key locally — the private half never leaves their machine — and prints a one-line **access code** (the public key).
+2. **Admin side** — the member sends that access code to a firm administrator, who approves it. `firm/practice-kit/scripts/register-admin` adds it to the private firm repo as a **per-member deploy key** (so members need no GitHub account, and any one member can be removed without affecting the others). This is normally driven by the **`/register-member` skill**, which keeps the whole exchange in plain English.
+3. The member runs `register-user` once more with the workspace address and their computer clones the firm repo.
+
+Only the public access code ever travels; the private key is generated where it is used and stays there. See the [`/register-member` skill](kit/firm/practice-kit/shared-library/skills/register-member/SKILL.md) for the full flow.
+
 ## File policies
 
 | Class | Policy | Behavior |

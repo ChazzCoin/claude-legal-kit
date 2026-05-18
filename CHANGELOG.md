@@ -15,11 +15,22 @@ The kit now serves firms on **Windows** alongside macOS/Linux. Every script ship
 - **`kit/firm/practice-kit/conduct/running-scripts.md`** — a third conduct rule: Claude reads `.claude/platform.json` and runs the `.ps1` flavor on Windows, the `.sh` flavor on macOS/Linux, with a self-detect fallback if the config is missing.
 - **`bin/README.md`** — documents the paired-script layout and per-OS requirements.
 
+### Added — new-member onboarding
+
+A two-sided flow for connecting a new firm member's computer to a firm's **private** repo, designed so a private key is never transmitted.
+
+- **`bin/register-user.sh` / `.ps1`** — the member side. Self-contained (needs only `git` + `ssh-keygen`) and lives in the public kit, so a new member can run it before they have any firm access. It generates an `ed25519` SSH key **on the member's own machine** — the private half never leaves it — configures a `~/.ssh/config` host alias scoped to the firm repo, and prints the public key as a one-line "access code." Run again with the workspace address, it clones the private firm repo. On Windows it also locks the key file's ACL to the current user (OpenSSH requires this).
+- **`kit/firm/practice-kit/scripts/register-admin.sh` / `.ps1`** — the admin side. Adds a member's access code to the private firm repo as a **per-member deploy key** via the GitHub CLI (`gh`) — write-enabled by default so members can save work, `--read-only`/`-ReadOnly` available. Per-member keys mean no member needs a GitHub account and any one member is individually revocable.
+- **`kit/firm/practice-kit/shared-library/skills/register-member/SKILL.md`** — the `/register-member` skill: orchestrates onboarding for an administrator in plain English, prepares the messages to send the new member, confirms before granting access, and refuses to handle a private key if one is pasted by mistake.
+
+The private key is generated where it is used and never travels; only the public access code does.
+
 ### Changed
 
 - `bin/init` now writes `.claude/platform.json` at install (via the detector).
 - `MANIFEST.json` registers `settings.json.template`; `gitignore.template` ignores the machine-specific `.claude/platform.json`.
 - `bootstrap/CLAUDE.md.template`, `conduct/README.md`, `scripts/README.md`, and `README.md` updated for the third conduct rule, the Windows install path, and the paired-script convention.
+- `README.md` gains an onboarding section; `skills/README.md` lists `register-member` as implemented.
 
 ## v0.1.0 — 2026-05-18
 

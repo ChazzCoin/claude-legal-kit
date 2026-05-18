@@ -23,6 +23,11 @@ rule is [`../conduct/running-scripts.md`](../conduct/running-scripts.md).
   and write `.claude/platform.json`. Run automatically by the `SessionStart`
   hook and once by `bin/init` at install. This is what tells Claude which
   flavor of every other script to run.
+- `register-admin.sh` / `register-admin.ps1` — the administrator side of
+  onboarding: add a new member's access code (SSH public key) to the private
+  firm repo as a per-member deploy key, via the GitHub CLI. Driven by the
+  `/register-member` skill. The member side is `bin/register-user` in the
+  public kit.
 
 ### Planned (skeleton stubs)
 
