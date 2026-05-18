@@ -48,6 +48,18 @@
         "to": ".claude/skills/sync/",
         "policy": "directory-mirror",
         "note": "The /sync skill — the firm-level command behind 'load the latest kit updates'. Reconciles every kit-managed file against the firm's copy three ways and proposes changes one by one. Kit-managed, so the skill itself stays current. Its reconciliation engine, bin/sync-report, ships only in the kit repo and runs from a fresh fetch — it is never installed into the firm home."
+      },
+      {
+        "from": "kit/.claude/hooks/",
+        "to": ".claude/hooks/",
+        "policy": "directory-mirror",
+        "note": "The identity hooks. session-start.sh is the SessionStart hook that resolves the active user (from .claude/current-user against members/users.json) and either orients the session or halts it; setup-user.sh is the interactive script a person runs once per machine to register. Kit-managed, so /sync keeps them current."
+      },
+      {
+        "from": "kit/.claude/settings.json",
+        "to": ".claude/settings.json",
+        "policy": "file-replace",
+        "note": "Kit-owned Claude Code settings — registers the SessionStart identity hook. A firm's own settings belong in .claude/settings.local.json (gitignored, machine-local), never here, so /sync can keep this current."
       }
     ]
   },

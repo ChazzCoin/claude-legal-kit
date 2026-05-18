@@ -18,6 +18,9 @@ firm/closed-matters/
 # Claude's local-only settings (machine-specific)
 .claude/settings.local.json
 
+# Per-machine identity marker — which user is on this computer
+.claude/current-user
+
 # macOS metadata
 .DS_Store
 .AppleDouble
