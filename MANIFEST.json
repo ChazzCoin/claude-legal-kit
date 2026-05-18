@@ -53,7 +53,7 @@
         "from": "kit/.claude/hooks/",
         "to": ".claude/hooks/",
         "policy": "directory-mirror",
-        "note": "The identity hooks. session-start.sh is the SessionStart hook that resolves the active user (from .claude/current-user against members/users.json) and either orients the session or halts it; setup-user.sh is the interactive script a person runs once per machine to register. Kit-managed, so /sync keeps them current."
+        "note": "The identity hooks. session-start.js is the SessionStart hook that resolves the active user (from .claude/current-user against members/users.json) and either orients the session or halts it — written in Node.js, the runtime Claude Code guarantees on every platform. setup-user.py is the interactive Python script a person runs once per machine to register. Kit-managed, so /sync keeps them current."
       },
       {
         "from": "kit/.claude/settings.json",
