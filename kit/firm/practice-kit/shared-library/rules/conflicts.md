@@ -12,7 +12,7 @@ Always-on rule. The firm runs a conflict check before every new matter, before a
 
 ## What counts as a conflict
 
-Governing rules: **Ala. R. Prof. Conduct 1.7** (current clients), **1.9** (former clients), **1.10** (imputation within firm).
+Governing rules: the rules of professional conduct — **Rule 1.7** (current clients), **Rule 1.9** (former clients), **Rule 1.10** (imputation within the firm). The numbering follows the ABA Model Rules, which the great majority of jurisdictions have adopted; confirm the wording of your jurisdiction's version.
 
 ### Current-client conflicts (Rule 1.7)
 - **Direct adversity:** representing one current client against another in any matter

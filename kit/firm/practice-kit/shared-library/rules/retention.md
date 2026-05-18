@@ -4,9 +4,9 @@ Always-on rule. How the firm keeps and eventually disposes of client files.
 
 ## Governing rules
 
-- **Ala. R. Prof. Conduct 1.16(d)** — on termination, protect the client's interests; surrender papers and property the client is entitled to
-- **Ala. Bar trust-account rules** — trust records retained 6 years minimum
-- **Malpractice SOL in Alabama** — 2 years from breach (subject to discovery rule), 4-year repose
+- **Rule 1.16(d) of the rules of professional conduct** — on termination, protect the client's interests; surrender papers and property the client is entitled to.
+- **Your jurisdiction's bar trust-account rules** — these set a minimum retention period for trust records (commonly 5–7 years). Confirm the figure.
+- **Your jurisdiction's legal-malpractice statute of limitations** — the retention baseline below is built to outlast it; the figure is in `firm/practice-kit/shared-library/jurisdictions/<jurisdiction>/`.
 
 **The firm's working position:** keep client files for **7 years** from matter close, then evaluate for destruction. Longer for specific document types (see below).
 
@@ -19,14 +19,14 @@ Always-on rule. How the firm keeps and eventually disposes of client files.
 | Civil litigation (settled) | 7 years from close | Standard |
 | Workers' compensation | 7 years from final award | Longer if periodic payments still running |
 | Wrongful death | 7 years from close | Watch for minor beneficiary tolling |
-| Matter involving minor | **Until minor turns 19 + 2 years** | SOL tolling for minors |
+| Matter involving a minor | **Until the minor reaches the age of majority + the SOL period** | SOL tolling for minors |
 | Matter involving incapacitated person | Until capacity restored + 2 years | SOL tolling |
 
 ## Documents with longer or indefinite retention
 
 - **Original wills** — **indefinite** (return to client at close; if unable to return, hold indefinitely)
 - **Original deeds, contracts, settlement releases** — return to client at close; keep firm copies 7 years
-- **Trust account records** — minimum **6 years** (Ala. Bar rule)
+- **Trust account records** — the minimum set by your jurisdiction's bar rule (commonly 5–7 years)
 - **Settlement-disbursement records** — 7 years from disbursement
 - **Conflict-check results** — **indefinite** (in `practice-registry/`)
 - **Matter-decline letters** — 7 years from decline
@@ -51,7 +51,7 @@ The **attorney file** stays with the firm:
 
 ## Active malpractice exposure
 
-The 2-year malpractice SOL in Alabama runs from the breach (with a discovery rule). The firm's 7-year retention gives meaningful margin against late-discovered claims.
+Your jurisdiction's legal-malpractice statute of limitations runs from the breach (often with a discovery rule). The firm's 7-year retention is built to give meaningful margin against late-discovered claims — confirm it comfortably exceeds your jurisdiction's limit.
 
 **Never destroy a matter file while malpractice exposure could plausibly exist.** When in doubt, hold longer.
 
