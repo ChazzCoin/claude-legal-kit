@@ -1,0 +1,46 @@
+# =============================================================================
+# Firm working files — kept off the cloud
+# =============================================================================
+# Anything listed here STAYS on this computer and is never sent to the cloud.
+# Edit with care: removing a line below could expose privileged material.
+# -----------------------------------------------------------------------------
+
+# Credentials vault — NEVER track (firm rule, CLAUDE.md)
+private/
+
+# Client matters — privileged & confidential work product
+firm/matters/
+firm/closed-matters/
+
+# Claude's per-project session data (transcripts, memory — may contain matter content)
+.claude/projects/
+
+# Claude's local-only settings (machine-specific)
+.claude/settings.local.json
+
+# macOS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor / OS scratch
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Office lockfiles & temp
+~$*.docx
+~$*.xlsx
+~$*.pptx
+.~lock.*
+
+# Logs / temp
+*.log
+*.tmp

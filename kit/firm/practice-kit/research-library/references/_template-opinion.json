@@ -1,0 +1,56 @@
+{
+  "id": "",
+  "source_id": "",
+  "title": "",
+  "case_name": "",
+  "type": "opinion",
+  "court": "",
+  "docket_number": "",
+  "reporter_citation": "",
+  "parallel_citations": [],
+  "decision_date": "",
+  "publication_date": "",
+  "creators": [
+    {"name": "", "role": "judge", "credentials": ""}
+  ],
+  "disposition": "",
+  "live_url": "",
+  "archive_url": "",
+  "alternate_urls": {
+    "westlaw": "",
+    "lexis": "",
+    "google_scholar": "",
+    "court_pacer": ""
+  },
+  "local_file_path": null,
+  "local_symlink_path": null,
+  "subject_tags": [],
+  "practice_area_tags": [],
+  "jurisdiction_tags": [],
+  "use_case_tags": [],
+  "doc_type_tags": ["opinion"],
+  "summary": "",
+  "key_holdings": [
+    {"holding": "", "our_restatement": ""}
+  ],
+  "pinpoint_references": [
+    {"short_quote": "", "location": "page N", "speaker_or_author": "Court", "topic": ""}
+  ],
+  "subsequent_history": "",
+  "treatment": "good-law | overruled | distinguished | criticized | abrogated",
+  "cross_references": [],
+  "used_in_matters": [],
+  "supersedes": null,
+  "superseded_by": null,
+  "citation_modified_bluebook": "",
+  "sensitivity": "public",
+  "credibility": "binding",
+  "license_posture": "public-record",
+  "date_accessed": "",
+  "date_added": "",
+  "date_last_reviewed": "",
+  "date_archived": "",
+  "date_superseded": null,
+  "added_by": "",
+  "notes": ""
+}

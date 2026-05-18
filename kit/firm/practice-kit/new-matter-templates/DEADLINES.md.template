@@ -1,0 +1,38 @@
+# Deadlines — {{MATTER_NAME}}
+
+All deadlines for this matter. Calendar each one in any external docket system in addition; this file is the canonical record for the matter file.
+
+## Hard statutory / court deadlines
+
+| Date | Deadline | Rule / Source | Status |
+|---|---|---|---|
+| {{SOL_DATE}} | Statute of limitations | {{SOL_RULE}} | open |
+
+## Discovery deadlines
+
+| Date | Deadline | Discovery item | Status |
+|---|---|---|---|
+
+## Motion deadlines
+
+| Date | Deadline | Motion | Status |
+|---|---|---|---|
+
+## Hearing and trial dates
+
+| Date | Event | Court | Status |
+|---|---|---|---|
+
+## Internal soft deadlines
+
+| Date | Deadline | Owner | Notes |
+|---|---|---|---|
+
+## Past deadlines (kept for retro and malpractice-defense purposes)
+
+| Date | Deadline | Outcome |
+|---|---|---|
+
+## Rules to remember
+
+For Alabama state court, deadline calculation defers to Ala. R. Civ. P. 6. For federal court (N.D. Ala.), Fed. R. Civ. P. 6. See `firm/practice-kit/shared-library/rules/deadlines.md` for the general framework and `firm/practice-kit/shared-library/jurisdictions/{{JURISDICTION}}/` for jurisdiction-specific quirks.

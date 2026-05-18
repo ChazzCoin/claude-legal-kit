@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "kit_revision": "2026-05-15-intake",
+  "synced_to_matters": [
+    {
+      "source": "shared-library/skills/intake/SKILL.md",
+      "destination": ".claude/skills/intake/SKILL.md",
+      "policy": "synced"
+    }
+  ],
+  "one_time_templates": [
+    { "source": "new-matter-templates/CLAUDE.md.template",        "destination": "CLAUDE.md",          "policy": "one-time" },
+    { "source": "new-matter-templates/INTAKE.md.template",        "destination": "INTAKE.md",          "policy": "one-time" },
+    { "source": "new-matter-templates/PARTIES.md.template",       "destination": "PARTIES.md",         "policy": "one-time" },
+    { "source": "new-matter-templates/TIMELINE.md.template",      "destination": "TIMELINE.md",        "policy": "one-time" },
+    { "source": "new-matter-templates/DEADLINES.md.template",     "destination": "DEADLINES.md",       "policy": "one-time" },
+    { "source": "new-matter-templates/STRATEGY.md.template",      "destination": "STRATEGY.md",        "policy": "one-time" },
+    { "source": "new-matter-templates/DISCOVERY-LOG.md.template", "destination": "DISCOVERY-LOG.md",   "policy": "one-time" },
+    { "source": "new-matter-templates/MOTIONS-LOG.md.template",   "destination": "MOTIONS-LOG.md",     "policy": "one-time" },
+    { "source": "new-matter-templates/BILLING.md.template",       "destination": "BILLING.md",         "policy": "one-time" },
+    { "source": "new-matter-templates/CLOSEOUT.md.template",      "destination": "CLOSEOUT.md",        "policy": "one-time" }
+  ],
+  "scaffold_directories": [
+    "01-Pleadings",
+    "02-Discovery",
+    "03-Motions",
+    "04-Correspondence",
+    "05-Records",
+    "06-Depositions",
+    "07-Exhibits",
+    "08-Notes"
+  ],
+  "notes": "Manifest v1 — adds /intake skill + new-matter-templates. The intake skill orchestrates folder creation, template instantiation, and registry-stamp writes. Future skills, drives, rules, and templates will be added as new entries here."
+}

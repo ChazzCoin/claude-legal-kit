@@ -1,0 +1,23 @@
+# Motions Log — {{MATTER_NAME}}
+
+## Motions filed by us
+
+| Date filed | Motion | Status | Hearing date | Ruling |
+|---|---|---|---|---|
+
+## Motions filed against us
+
+| Date filed | Motion | Our response due | Status | Ruling |
+|---|---|---|---|---|
+
+Status values: `pending` / `briefing` / `submitted` / `argued` / `ruled` / `withdrawn`
+
+## Anticipated motions
+
+| Motion | Trigger / Timing | Owner |
+|---|---|---|
+| {{ANTICIPATED_MOTION_1}} | | |
+
+## Notes
+
+(Motion strategy. What to file, when, in what order. Which motions move the dial and which are routine.)

@@ -1,0 +1,44 @@
+# Strategy — {{MATTER_NAME}}
+
+**ATTORNEY WORK PRODUCT — PRIVILEGED & CONFIDENTIAL**
+
+This document captures the attorney's mental impressions, theories, and strategic plans for the matter. **It is not produced in discovery.** Treat it accordingly.
+
+## Theory of the case
+
+{{THEORY_OF_CASE}}
+
+## Strengths
+
+- {{STRENGTH_1}}
+
+## Weaknesses
+
+- {{WEAKNESS_1}}
+
+## Risks
+
+- {{RISK_1}}
+
+## Themes for trial / persuasion
+
+- {{THEME_1}}
+
+## Settlement posture
+
+- **Target settlement value:** {{TARGET_SETTLEMENT}}
+- **Floor (walk-away):** {{FLOOR_SETTLEMENT}}
+- **Settlement strategy:** {{SETTLEMENT_STRATEGY}}
+- **Negotiation history:** (track demands and offers here as they happen)
+
+## Open strategic questions
+
+- {{OPEN_QUESTION_1}}
+
+## Decision log
+
+(Use `/decision-log` to add entries. Each entry: date, decision, alternatives considered, rationale.)
+
+## Notes from team strategy sessions
+
+(Date the entries. Capture what was decided and what's outstanding.)

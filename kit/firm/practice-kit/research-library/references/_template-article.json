@@ -1,0 +1,47 @@
+{
+  "id": "",
+  "source_id": "",
+  "title": "",
+  "subtitle": "",
+  "type": "law-review-article",
+  "volume": "",
+  "issue": "",
+  "page_range": "",
+  "page_count": 0,
+  "publication_date": "",
+  "creators": [
+    {"name": "", "role": "author", "credentials": ""}
+  ],
+  "live_url": "",
+  "archive_url": "",
+  "alternate_urls": {},
+  "local_file_path": null,
+  "local_symlink_path": null,
+  "subject_tags": [],
+  "practice_area_tags": [],
+  "jurisdiction_tags": [],
+  "use_case_tags": [],
+  "doc_type_tags": ["law-review-article"],
+  "summary": "",
+  "key_arguments": [
+    {"argument": "", "our_restatement": ""}
+  ],
+  "pinpoint_references": [
+    {"short_quote": "", "location": "page N", "speaker_or_author": "", "topic": ""}
+  ],
+  "cross_references": [],
+  "used_in_matters": [],
+  "supersedes": null,
+  "superseded_by": null,
+  "citation_modified_bluebook": "",
+  "sensitivity": "public",
+  "credibility": "persuasive-moderate",
+  "license_posture": "publicly-available",
+  "date_accessed": "",
+  "date_added": "",
+  "date_last_reviewed": "",
+  "date_archived": "",
+  "date_superseded": null,
+  "added_by": "",
+  "notes": ""
+}

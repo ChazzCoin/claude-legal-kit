@@ -1,0 +1,30 @@
+# CLAUDE.md — {{MEMBER_NAME}}'s workspace
+
+## Role
+{{ROLE}}
+
+Examples: Partner, Associate, Of Counsel, Paralegal, Legal Assistant, Investigator
+
+## Current focus
+- **Active matters:** {{ACTIVE_MATTERS}}
+- **Active drive:** {{DRIVE}}
+
+Drives (one at a time): `trial-prep`, `deposition-week`, `discovery-push`, `closeout`, `normal`
+
+## Preferences
+
+- {{PREFERENCE_1}}
+- {{PREFERENCE_2}}
+
+(Examples: "Prefer concise drafts over exhaustive ones — I edit faster than I read," "Always include a 1-paragraph TLDR at the top of memos," "When summarizing depos, lead with admissions then move to impeachment.")
+
+## Boundaries
+
+- This folder holds personal drafts, notes, tasks, and the personal email workspace (`email/`). Not visible to the firm by default.
+- When work is ready, promote into `firm/matters/<Matter>/<subfolder>/`.
+- Use `members/shared-inbox/` for firm-wide messages; member-to-member handoffs go in the recipient's `members/<them>/inbox/`.
+- Email drafts, contact logs, and email-related notes live in `email/`. See `email/README.md` for the workflow.
+
+## Confidentiality
+
+All firm-wide confidentiality rules from `/Volumes/T7 Shield/CLAUDE.md` apply here too. Personal drafts are still client work product — strict-no-external-transmission still in force.

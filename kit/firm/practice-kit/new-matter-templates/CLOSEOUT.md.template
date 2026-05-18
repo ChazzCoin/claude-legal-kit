@@ -1,0 +1,45 @@
+# Closeout — {{MATTER_NAME}}
+
+**Status:** {{CLOSEOUT_STATUS}}
+
+## Resolution
+
+- **Outcome:** {{OUTCOME}}
+- **Date resolved:** {{RESOLUTION_DATE}}
+- **Settlement / judgment amount:** {{RESOLUTION_AMOUNT}}
+
+Outcome values: `settled` / `judgment-for-client` / `judgment-against-client` / `dismissed-voluntary` / `dismissed-involuntary` / `withdrawn` / `other`
+
+## Final client communication
+
+- **Final letter date:** {{FINAL_LETTER_DATE}}
+- **File returned to client:** {{FILE_RETURN_DATE}}
+- **Disposition of remaining trust funds:** {{TRUST_DISPOSITION}}
+
+## Retention
+
+- **Retention period:** {{RETENTION_PERIOD}}
+- **Retention basis:** {{RETENTION_RULE}}
+- **Destruction-eligible date:** {{DESTRUCTION_DATE}}
+
+See `firm/practice-kit/shared-library/rules/retention.md` for the full retention framework.
+
+## Conflict implications going forward
+
+- {{CONFLICT_NOTES_POST_CLOSE}}
+
+Update the relevant `firm/practice-registry/parties/` stamps to reflect the closed status and any forward-looking conflict considerations.
+
+## Surviving obligations
+
+- {{SURVIVING_OBLIGATION_1}}
+
+Examples: continuing representation in related matter, settlement-monitoring obligations, indemnity covenants the client agreed to.
+
+## Final outcome summary (1 paragraph)
+
+{{OUTCOME_SUMMARY}}
+
+## Lessons learned
+
+(Use `/lessons` to capture reflections. What worked, what to do differently, what surprised us. Useful for `promote-to-kit/` decisions later.)

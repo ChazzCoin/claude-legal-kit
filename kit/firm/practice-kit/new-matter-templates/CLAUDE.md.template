@@ -1,0 +1,71 @@
+# CLAUDE.md — {{MATTER_NAME}}
+
+## At a glance
+
+- **Client:** {{CLIENT_NAME}}
+- **Opposing party:** {{OPPOSING_PARTY}}
+- **Court:** {{COURT_NAME}} ({{JURISDICTION}})
+- **Case number:** {{CASE_NUMBER}}
+- **Practice area:** {{PRACTICE_AREA}}
+- **Primary attorney:** {{PRIMARY_ATTORNEY}}
+- **Engaged:** {{ENGAGEMENT_DATE}}
+- **Fee structure:** {{FEE_TYPE}}
+- **Phase:** {{PHASE}}
+- **Active drive:** {{DRIVE}}
+
+Phase values: `intake` / `pre-litigation` / `discovery` / `motion-practice` / `trial-prep` / `trial` / `post-trial` / `closing`
+Drive values: `trial-prep` / `deposition-week` / `discovery-push` / `closeout` / `normal`
+
+## Theory of the case
+
+{{THEORY_OF_CASE}}
+
+## Critical dates
+
+- **Statute of limitations:** {{SOL_DATE}} ({{SOL_RULE}})
+- **Next hard deadline:** {{NEXT_DEADLINE}}
+
+Full deadline tracker: [DEADLINES.md](DEADLINES.md).
+
+## Parties
+
+- **Client:** {{CLIENT_NAME}} — stamp at `firm/practice-registry/parties/{{CLIENT_STAMP_FILE}}`
+- **Opposing party:** {{OPPOSING_PARTY}} — stamp at `firm/practice-registry/parties/{{OPPOSING_STAMP_FILE}}`
+- **Opposing counsel:** {{OPPOSING_COUNSEL}} — stamp at `firm/practice-registry/opposing-counsel/{{OPPOSING_COUNSEL_STAMP_FILE}}`
+
+Full party roster: [PARTIES.md](PARTIES.md).
+
+## Court & jurisdiction
+
+- **Court:** {{COURT_NAME}} — stamp at `firm/practice-registry/courts/{{COURT_STAMP_FILE}}`
+- **Judge:** {{JUDGE_NAME}} — stamp at `firm/practice-registry/judges/{{JUDGE_STAMP_FILE}}`
+- **Local rules & filing format:** `firm/practice-kit/shared-library/jurisdictions/{{JURISDICTION}}/`
+
+## Practice-area extensions in scope
+
+- `firm/practice-kit/shared-library/practice-areas/{{PRACTICE_AREA}}/`
+
+(If multiple practice areas apply, list each on its own line.)
+
+## How work is organized in this matter
+
+| Subfolder | Holds |
+|---|---|
+| `01-Pleadings/` | Complaints, answers, amended pleadings |
+| `02-Discovery/` | Served and received discovery; logged in [DISCOVERY-LOG.md](DISCOVERY-LOG.md) |
+| `03-Motions/` | Motions filed and received; logged in [MOTIONS-LOG.md](MOTIONS-LOG.md) |
+| `04-Correspondence/` | Letters and emails (client, opposing counsel, court) |
+| `05-Records/` | Medical, financial, business records (production-quality copies) |
+| `06-Depositions/` | Deposition transcripts and summaries |
+| `07-Exhibits/` | Exhibits prepared for hearings or trial |
+| `08-Notes/` | Durable file notes (calls, meetings, court appearances) |
+
+## Confidentiality
+
+Same rules as drive-root `CLAUDE.md` apply, plus:
+- Strategic thinking and theory development belong in [STRATEGY.md](STRATEGY.md), which is **attorney work product** — never produce it in discovery.
+- Communications with the client are **privileged** — track them in `04-Correspondence/` with privilege markers.
+
+## Matter notes
+
+(Free-form space for evolving context — open questions, hunches, what to revisit. Updated as the matter progresses.)

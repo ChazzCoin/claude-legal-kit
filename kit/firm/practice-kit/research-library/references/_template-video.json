@@ -1,0 +1,48 @@
+{
+  "id": "",
+  "source_id": "",
+  "title": "",
+  "subtitle": "",
+  "type": "video",
+  "platform": "",
+  "publication_date": "",
+  "duration_minutes": 0,
+  "creators": [
+    {"name": "", "role": "creator", "credentials": ""},
+    {"name": "", "role": "speaker", "credentials": ""}
+  ],
+  "live_url": "",
+  "archive_url": "",
+  "alternate_urls": {},
+  "local_file_path": null,
+  "local_symlink_path": null,
+  "has_transcript": false,
+  "transcript_location": "",
+  "subject_tags": [],
+  "practice_area_tags": [],
+  "jurisdiction_tags": [],
+  "use_case_tags": [],
+  "doc_type_tags": ["video"],
+  "summary": "",
+  "key_frameworks": [
+    {"name": "", "our_restatement": ""}
+  ],
+  "pinpoint_references": [
+    {"short_quote": "", "location": "approx HH:MM:SS", "speaker_or_author": "", "topic": ""}
+  ],
+  "cross_references": [],
+  "used_in_matters": [],
+  "supersedes": null,
+  "superseded_by": null,
+  "citation_modified_bluebook": "",
+  "sensitivity": "public",
+  "credibility": "persuasive-low",
+  "license_posture": "publicly-available",
+  "date_accessed": "",
+  "date_added": "",
+  "date_last_reviewed": "",
+  "date_archived": "",
+  "date_superseded": null,
+  "added_by": "",
+  "notes": ""
+}

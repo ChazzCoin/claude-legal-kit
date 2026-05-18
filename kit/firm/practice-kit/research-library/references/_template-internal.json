@@ -1,0 +1,45 @@
+{
+  "id": "",
+  "source_id": "",
+  "title": "",
+  "type": "memo",
+  "matter_name": "",
+  "matter_id": "",
+  "publication_date": "",
+  "page_count": 0,
+  "creators": [
+    {"name": "", "role": "author", "credentials": "", "firm_role": ""}
+  ],
+  "live_url": null,
+  "archive_url": null,
+  "alternate_urls": {},
+  "local_file_path": "",
+  "local_symlink_path": "",
+  "subject_tags": [],
+  "practice_area_tags": [],
+  "jurisdiction_tags": [],
+  "use_case_tags": [],
+  "doc_type_tags": [],
+  "summary": "",
+  "key_arguments": [
+    {"argument": "", "our_restatement": ""}
+  ],
+  "pinpoint_references": [
+    {"short_quote": "", "location": "page N or section", "speaker_or_author": "", "topic": ""}
+  ],
+  "cross_references": [],
+  "used_in_matters": [],
+  "supersedes": null,
+  "superseded_by": null,
+  "citation_modified_bluebook": "",
+  "sensitivity": "work-product",
+  "credibility": "internal-firm",
+  "license_posture": "internal-only",
+  "date_accessed": "",
+  "date_added": "",
+  "date_last_reviewed": "",
+  "date_archived": null,
+  "date_superseded": null,
+  "added_by": "",
+  "notes": ""
+}

@@ -1,0 +1,30 @@
+# Timeline — {{MATTER_NAME}}
+
+Running chronology. Update whenever a new date surfaces. Distinguish factual events (what happened in the underlying dispute) from procedural events (what's happened in the litigation).
+
+## Pre-litigation facts
+
+| Date | Event | Source |
+|---|---|---|
+
+## Procedural history
+
+| Date | Event | Document |
+|---|---|---|
+
+## Significant communications
+
+| Date | From | To | Re | Notes |
+|---|---|---|---|---|
+
+## Open questions on dates
+
+- {{OPEN_DATE_QUESTION}}
+
+## How dates flow into other files
+
+- Hard deadlines and rule-based dates → [DEADLINES.md](DEADLINES.md)
+- Discovery served / received with dates → [DISCOVERY-LOG.md](DISCOVERY-LOG.md)
+- Motions filed with dates → [MOTIONS-LOG.md](MOTIONS-LOG.md)
+
+This file is the **chronology of facts and events**, not a deadline tracker.

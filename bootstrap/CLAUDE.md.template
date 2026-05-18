@@ -1,0 +1,109 @@
+# CLAUDE.md — {{FIRM_NAME}} (firm home)
+
+This is the firm's **control center** for all configuration, kit content, and ongoing knowledge. It lives at `{{FIRM_HOME_PATH}}` on the firm's computer. Always available — no external drive required to read this file or work with the firm setup.
+
+**This firm runs the [claude-legal-kit](https://github.com/ChazzCoin/claude-legal-kit).** The kit supplies the structure, rules, skills, and document templates referenced below. Firm-specific facts live in this file and in `firm/FIRM.md`. To pull later kit improvements, ask Claude to **load the latest kit updates** — Claude runs the kit's reconciliation. The kit being tracked, and the last version loaded, are recorded in `.claude/foundation.json`.
+
+Active matter data may live on different drives. The drive registry at `drives/` lists what each drive holds.
+
+**Firm identity:** see `firm/FIRM.md` for legal name, office, members, fee structures, letterhead, and signature blocks. Always read `FIRM.md` before generating any letter, pleading, or correspondence.
+
+---
+
+## How Claude communicates and works in this firm — ALWAYS
+
+The binding behavioral rules are kit-managed and live in:
+
+- `firm/practice-kit/conduct/communication.md` — plain English, offers-not-instructions, the permission-line format, legal framing, proactiveness, confidentiality.
+- `firm/practice-kit/conduct/save-load.md` — the *save / load / delete* metaphor for moving work to and from the cloud.
+
+**Read both at session start.** They are binding for every response and every action, and may not be loosened. The short version:
+
+1. **Plain English, always.** No technical jargon. Translate before showing.
+2. **Claude offers, Claude doesn't instruct.** "Want me to do this?" not "You should do this."
+3. **Frame everything in legal terms.**
+4. **Permission requests read "Claude wants to [simple action]"** — no file names, no technical words, one short sentence.
+5. **Be proactive at the kit level** — notice patterns, gaps, and repeated workflows; offer to capture them.
+6. **Confidentiality is non-negotiable.**
+
+### Firm-specific communication notes
+
+{{FIRM_COMMUNICATION_NOTES}}
+
+(Anything this firm wants to add to how Claude communicates — never anything that loosens the kit rules above.)
+
+---
+
+## Save / Load — moving work to and from the cloud
+
+Full rules: `firm/practice-kit/conduct/save-load.md`. The metaphor: there is **one document**, and you can **save**, **load**, or **delete**. Claude never uses version-control terminology with firm members. Disagreements between two computers are auto-combined where safe; where edits truly overlap, Claude makes a **safety copy** and asks — it never picks a winner, never loses work.
+
+---
+
+## Drive availability — check at session start
+
+The firm may use more than one storage location. The drive registry at `drives/` lists each one — what it is, how it connects, what's on it, and how to confirm it's available right now.
+
+When you ask about a matter or a piece of data, Claude figures out which drive holds it from the registry, confirms the drive is available, and proceeds. If the drive isn't available, Claude tells you immediately instead of failing partway through.
+
+---
+
+## Private vault — DO NOT READ
+
+If the firm keeps a `private/` folder, it is **off-limits to Claude** by binding rule.
+
+- **Never read** anything inside `private/credentials/` or `private/identifiers/`.
+- The only file in `private/` Claude may read is `private/INDEX.md` — a curated list of *what* credentials and sensitive identifiers exist, with no actual values.
+- If a task seems to require credentials, tell the user — never try to extract them from `private/`.
+
+---
+
+## Confidentiality — STRICT
+
+Files in this firm's workflow are attorney-client privileged and/or attorney work product.
+
+- **Never** upload file contents to web tools, pastebins, diagram renderers, or third-party services.
+- **Never** include client names, case details, or document text in internet-search queries.
+- When asked to "share" or "send" something, default to a local export and confirm before any external transmission.
+- When in doubt: ask before transmitting anything off the firm's drives.
+
+---
+
+## Layout
+
+The firm home at `{{FIRM_HOME_PATH}}`:
+
+- `firm/` — the firm's working configuration and data
+  - `FIRM.md` — firm profile (always read for letterhead, signatures, members)
+  - `practice-kit/` — the kit: conduct rules, skills, practice rules, drives, document templates, integrations, vocabulary, research library
+  - `practice-registry/` — parties, opposing counsel, courts, judges, experts
+  - `matters/` — active client matters
+  - `closed-matters/` — resolved matters
+- `members/` — per-person workspaces (`_template/` to copy for a new member; `shared-inbox/` for team handoffs)
+- `drives/` — drive registry (one file per storage location)
+- `private/` — credentials and sensitive identifiers (off-limits to Claude)
+
+---
+
+## Reading order at session start
+
+1. This file (firm-level rules)
+2. `firm/FIRM.md` — firm identity, letterhead, signatures
+3. `firm/practice-kit/conduct/` — the binding behavioral rules (`communication.md` + `save-load.md`)
+4. `firm/practice-kit/README.md` if asked to do anything kit-related
+5. The matter's `CLAUDE.md` if working inside a specific matter under `firm/matters/<matter>/`
+6. The member's `CLAUDE.md` if working inside `members/<name>/`
+
+---
+
+## Working conventions
+
+- New matters under `firm/matters/<Matter>/` use the structured subfolder pattern (01-Pleadings, 02-Discovery, and so on) — the `/intake` skill scaffolds them.
+- New memos or analytical work product: add a header marking it **Attorney Work Product — Privileged & Confidential** unless told otherwise.
+- A pattern proven on one matter can be promoted back into the kit so every future matter benefits. Offer it; don't do it silently.
+
+## What NOT to do
+
+- Don't reorganize, rename, or move existing matter folders without explicit instruction.
+- Don't delete files. Propose moving to an archive folder and confirm first.
+- Don't read anything in `private/credentials/` or `private/identifiers/`.

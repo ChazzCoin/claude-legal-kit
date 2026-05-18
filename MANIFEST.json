@@ -1,0 +1,85 @@
+{
+  "name": "claude-legal-kit",
+  "version": "0.1.0",
+  "description": "Portable Claude Code foundation for law firms — conduct rules, rules of practice, skills, document templates, and firm structure that install into any firm's home folder and stay current through a one-way sync.",
+  "source": {
+    "repo": "https://github.com/ChazzCoin/claude-legal-kit",
+    "branch": "main"
+  },
+  "kit": {
+    "description": "Files synced into a firm's home folder. Updates here propagate via the /sync workflow ('load the latest kit updates').",
+    "files": [
+      {
+        "from": "kit/firm/practice-kit/",
+        "to": "firm/practice-kit/",
+        "policy": "directory-mirror",
+        "note": "The entire practice-kit: conduct rules (communication, save-load), shared-library (skills, rules of practice, document templates, integrations, jurisdictions, practice-areas, filing-pipeline), new-matter-templates, vocabulary, the research-library structure, scripts, and the practice-kit's own manifest.json that governs firm-to-matter sync. Firm-added research entries are not kit-tracked, so /sync leaves them untouched."
+      },
+      {
+        "from": "kit/firm/practice-registry/",
+        "to": "firm/practice-registry/",
+        "policy": "directory-mirror",
+        "note": "The cross-matter registry structure (parties, opposing-counsel, courts, judges, experts) — README files only. Firm-added party and counsel stamps live alongside and are not kit-tracked."
+      },
+      {
+        "from": "kit/firm/README.md",
+        "to": "firm/README.md",
+        "policy": "file-replace"
+      },
+      {
+        "from": "kit/members/_template/",
+        "to": "members/_template/",
+        "policy": "directory-mirror",
+        "note": "The per-member workspace template. Copied to members/<name>/ for each firm member at setup."
+      },
+      {
+        "from": "kit/members/README.md",
+        "to": "members/README.md",
+        "policy": "file-replace"
+      },
+      {
+        "from": "kit/drives/README.md",
+        "to": "drives/README.md",
+        "policy": "file-replace",
+        "note": "The drive-registry guide. Individual drive files (one per storage location) are firm-specific and not kit-tracked."
+      }
+    ]
+  },
+  "bootstrap": {
+    "description": "One-time files copied at init only. Never overwritten by /sync — the firm owns them.",
+    "files": [
+      {
+        "from": "bootstrap/CLAUDE.md.template",
+        "to": "CLAUDE.md",
+        "policy": "skip-if-exists",
+        "note": "The firm's root control file. Carries {{PLACEHOLDERS}} the firm fills in; references the kit's conduct rules as the binding behavioral source."
+      },
+      {
+        "from": "bootstrap/FIRM.md.template",
+        "to": "firm/FIRM.md",
+        "policy": "skip-if-exists",
+        "note": "Firm identity profile — legal name, office, members, fee structures, letterhead, signature blocks. {{PLACEHOLDERS}} filled by the firm."
+      },
+      {
+        "from": "bootstrap/gitignore.template",
+        "to": ".gitignore",
+        "policy": "skip-if-exists",
+        "note": "Keeps the private vault and client matters off the cloud."
+      },
+      {
+        "from": "bootstrap/foundation.json",
+        "to": ".claude/foundation.json",
+        "policy": "init-only-with-sha",
+        "note": "Records which kit the firm tracks and the kit commit it was last synced to. Stamped with the kit's HEAD SHA at init time; /sync bumps the pin thereafter."
+      }
+    ]
+  },
+  "scaffold": {
+    "description": "Empty directories created at init, each with a .gitkeep.",
+    "directories": [
+      "firm/matters",
+      "firm/closed-matters",
+      "members/shared-inbox"
+    ]
+  }
+}

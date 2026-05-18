@@ -1,0 +1,51 @@
+{
+  "id": "",
+  "source_id": "",
+  "title": "",
+  "type": "brief",
+  "matter_name": "",
+  "case_caption": "",
+  "court": "",
+  "docket_number": "",
+  "stage": "trial-court | appellate | reply",
+  "side": "plaintiff | defendant | appellant | appellee | amicus | other",
+  "filed_date": "",
+  "publication_date": "",
+  "page_count": 0,
+  "creators": [
+    {"name": "", "role": "author", "credentials": "", "firm": ""}
+  ],
+  "live_url": "",
+  "archive_url": "",
+  "alternate_urls": {},
+  "local_file_path": "",
+  "local_symlink_path": "",
+  "subject_tags": [],
+  "practice_area_tags": [],
+  "jurisdiction_tags": [],
+  "use_case_tags": ["brief-writing"],
+  "doc_type_tags": ["brief"],
+  "summary": "",
+  "key_arguments": [
+    {"argument": "", "our_restatement": ""}
+  ],
+  "pinpoint_references": [
+    {"short_quote": "", "location": "page N", "speaker_or_author": "", "topic": ""}
+  ],
+  "outcome": "",
+  "cross_references": [],
+  "used_in_matters": [],
+  "supersedes": null,
+  "superseded_by": null,
+  "citation_modified_bluebook": "",
+  "sensitivity": "",
+  "credibility": "internal-firm",
+  "license_posture": "",
+  "date_accessed": "",
+  "date_added": "",
+  "date_last_reviewed": "",
+  "date_archived": "",
+  "date_superseded": null,
+  "added_by": "",
+  "notes": ""
+}

@@ -1,0 +1,56 @@
+# Intake — {{MATTER_NAME}}
+
+**Intake date:** {{INTAKE_DATE}}
+**Intake by:** {{INTAKE_BY}}
+**Primary attorney:** {{PRIMARY_ATTORNEY}}
+
+## Prospective client
+
+- **Name:** {{CLIENT_NAME}}
+- **Contact:**
+  - Phone: {{CLIENT_PHONE}}
+  - Email: {{CLIENT_EMAIL}}
+  - Address: {{CLIENT_ADDRESS}}
+- **How they found us:** {{REFERRAL_SOURCE}}
+
+## What they're seeking
+
+{{LEGAL_NEED_DESCRIPTION}}
+
+## Brief facts (as stated at intake)
+
+{{BRIEF_FACTS}}
+
+## Adverse parties
+
+- **Primary adverse:** {{OPPOSING_PARTY}}
+- **Other adverse identified:** {{OTHER_ADVERSE_PARTIES}}
+
+## Time-sensitive considerations
+
+- **Statute of limitations:** {{SOL_DATE}} ({{SOL_RULE}})
+- **Other deadlines disclosed at intake:** {{INTAKE_DEADLINES}}
+- **Filing imminent?** {{FILING_IMMINENT}}
+
+## Conflict check
+
+- **Search performed:** {{CONFLICT_CHECK_DATE}}
+- **Result:** {{CONFLICT_RESULT}}
+- **Notes:** {{CONFLICT_NOTES}}
+
+## Engagement decision
+
+- **Decision:** {{ENGAGEMENT_DECISION}}
+- **Fee structure:** {{FEE_TYPE}}
+- **Engagement letter:** {{ENGAGEMENT_LETTER_STATUS}}
+- **Trust deposit:** {{TRUST_DEPOSIT}}
+
+## Next actions
+
+- {{NEXT_ACTION_1}}
+- {{NEXT_ACTION_2}}
+- {{NEXT_ACTION_3}}
+
+## Audit trail
+
+This file is the **engagement decision record** — keep it intact. If the matter is declined, this file should be filed under `firm/practice-registry/parties/<client-name>.md` notes (or kept here for reference) so future intake sees the prior look.

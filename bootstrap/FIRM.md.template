@@ -1,0 +1,110 @@
+# FIRM.md — {{FIRM_LEGAL_NAME}}
+
+Source of truth for firm-level identity. Read by every skill that needs firm info (letterhead, signature blocks, billing, intake, conflict checks).
+
+**Status:** {{FIRM_STATUS}}
+
+---
+
+## Identity
+
+- **Legal name:** {{FIRM_LEGAL_NAME}}
+- **Common name:** {{FIRM_COMMON_NAME}}
+- **Entity type:** {{FIRM_ENTITY_TYPE}}
+- **State of formation:** {{FIRM_STATE}}
+- **Entity ID:** {{FIRM_ENTITY_ID}}
+- **Formed:** {{FIRM_FORMED_DATE}}
+- **Registered agent:** {{FIRM_REGISTERED_AGENT}}
+- **EIN:** {{FIRM_EIN}}
+
+## Specialization / focus
+
+{{FIRM_FOCUS}}
+
+## Office
+
+- **Business address** (use for letterhead, pleadings, mail to the firm):
+  {{FIRM_BUSINESS_ADDRESS}}
+
+- **Registered office** (if different from the business address):
+  {{FIRM_REGISTERED_OFFICE}}
+
+- **Main firm phone:** {{FIRM_MAIN_PHONE}}
+- **Firm fax:** {{FIRM_FAX}}
+- **General firm email:** {{FIRM_GENERAL_EMAIL}}
+- **Website:** {{FIRM_WEBSITE}}
+
+## Bar registration
+
+- **States admitted (firm-level practice):** {{FIRM_BAR_STATES}}
+- **Active courts:**
+  - {{FIRM_ACTIVE_COURTS}}
+
+## Trust account (IOLTA)
+
+- **Bank:** {{TRUST_BANK_NAME}}
+- **IOLTA status:** {{TRUST_IOLTA_STATUS}}
+- **Reconciliation cadence:** {{TRUST_RECON_CADENCE}}
+
+(Account numbers are not stored on this drive. Keep those in separately-protected firm records.)
+
+## Members
+
+| Member | Role | Member folder | Bar status | Direct phone |
+|---|---|---|---|---|
+| {{MEMBER_1_NAME}} | {{MEMBER_1_ROLE}} | `members/{{MEMBER_1_FOLDER}}/` | {{MEMBER_1_BAR}} | {{MEMBER_1_PHONE}} |
+| {{MEMBER_2_NAME}} | {{MEMBER_2_ROLE}} | `members/{{MEMBER_2_FOLDER}}/` | {{MEMBER_2_BAR}} | {{MEMBER_2_PHONE}} |
+
+Add one row per member. Member-specific info (bar numbers, signature blocks, hourly rate, preferences) lives in each member's `CLAUDE.md`. Edit there, not here.
+
+## Active practice areas
+
+{{FIRM_PRACTICE_AREAS}}
+
+Practice-area extensions live under `firm/practice-kit/shared-library/practice-areas/`.
+
+## Active jurisdictions
+
+{{FIRM_JURISDICTIONS}}
+
+Procedural rules live under `firm/practice-kit/shared-library/jurisdictions/`.
+
+## Default fee structures
+
+{{FIRM_FEE_STRUCTURES}}
+
+## Default letterhead
+
+For use by the `/letter` and `/pleading` skills. Members may override with personal letterhead in their signature blocks.
+
+```
+{{FIRM_LETTERHEAD}}
+```
+
+## Default firm signature block
+
+For correspondence signed in the firm's name rather than an individual attorney's.
+
+```
+{{FIRM_SIGNATURE_BLOCK}}
+```
+
+Individual attorney signature blocks live in each member's `CLAUDE.md`.
+
+## How Claude works with us
+
+Full rules in the kit's conduct folder (`firm/practice-kit/conduct/`) and the firm's root `CLAUDE.md`. The short version, binding for every session:
+
+- **Plain English only.** No technical jargon, no developer language.
+- **Claude offers, Claude doesn't instruct.** "Want me to do this?" not "You should do this."
+- **Permission requests read as "Claude wants to [simple thing]"** — no file names, no technical words, one short sentence.
+- **Frame in legal terms** — relate every action to legal practice.
+- **Be proactive** — notice patterns, offer to make rules, offer to set up missing folders.
+
+## Confidentiality posture
+
+Strict: no external transmission of client files. Every member is bound; no member-level override allowed. See the firm's root `CLAUDE.md`.
+
+## Notes
+
+{{FIRM_NOTES}}

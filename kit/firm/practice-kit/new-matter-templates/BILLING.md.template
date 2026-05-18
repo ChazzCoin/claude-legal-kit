@@ -1,0 +1,49 @@
+# Billing — {{MATTER_NAME}}
+
+**Fee structure:** {{FEE_TYPE}}
+
+Skip the irrelevant sections based on fee structure (e.g., hourly rates section is moot for pure contingency).
+
+## Hourly rates (if applicable)
+
+| Member | Role | Rate |
+|---|---|---|
+| {{PRIMARY_ATTORNEY}} | {{ATTORNEY_ROLE}} | {{ATTORNEY_RATE}} |
+
+## Time entries
+
+| Date | Member | Description | Hours | Rate | Amount |
+|---|---|---|---|---|---|
+
+## Invoices
+
+| Invoice # | Date | Period covered | Amount | Status |
+|---|---|---|---|---|
+
+Status values: `draft` / `sent` / `paid` / `partial` / `overdue` / `written-off`
+
+## Trust account (if applicable)
+
+- **Initial deposit:** {{TRUST_INITIAL}}
+- **Current balance:** {{TRUST_BALANCE}}
+- **Last reconciliation:** {{TRUST_LAST_RECON}}
+
+| Date | Description | In | Out | Balance |
+|---|---|---|---|---|
+
+## Contingency tracking (if applicable)
+
+- **Contingency %:** {{CONTINGENCY_PERCENT}}
+- **Settlement / judgment amount:** {{SETTLEMENT_AMOUNT}}
+- **Costs advanced:** {{COSTS_ADVANCED}}
+- **Attorney fee calculation:** {{ATTORNEY_FEE_CALC}}
+- **Client net:** {{CLIENT_NET}}
+
+## Disbursements / costs
+
+| Date | Description | Amount | Reimbursable from client? |
+|---|---|---|---|
+
+## Notes
+
+(Billing strategy, write-down decisions, fee disputes, anything that affects collection.)

@@ -1,0 +1,40 @@
+# Discovery Log — {{MATTER_NAME}}
+
+Track every discovery item served and received. Pair every served item with its corresponding response.
+
+## Served by us
+
+| Date served | Type | Served on | Response due | Response status |
+|---|---|---|---|---|
+
+## Served on us
+
+| Date served | Type | Served by | Response due | Response status |
+|---|---|---|---|---|
+
+Type values: `interrogatories` / `RFP` / `RFA` / `subpoena` / `notice-of-deposition` / `other`
+Status values: `outstanding` / `responded` / `objected` / `compelled` / `withdrawn`
+
+## Documents produced by us
+
+| Date | Bates range | Description | Privilege withholdings (count) |
+|---|---|---|---|
+
+## Documents produced to us
+
+| Date | Bates range | Producer | Description | Format |
+|---|---|---|---|---|
+
+## Privilege log (our withholdings)
+
+| Bates | Date | Author | Recipient | Description | Privilege claimed |
+|---|---|---|---|---|---|
+
+## Discovery disputes
+
+| Date raised | Issue | Status | Resolution |
+|---|---|---|---|
+
+## Notes
+
+(Discovery strategy, anticipated battles, what to push for, what to give up.)

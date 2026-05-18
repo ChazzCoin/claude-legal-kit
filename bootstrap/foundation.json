@@ -1,0 +1,9 @@
+{
+  "kit": {
+    "repo": "https://github.com/ChazzCoin/claude-legal-kit",
+    "branch": "{{KIT_BRANCH}}"
+  },
+  "pinned_sha": "{{KIT_SHA}}",
+  "last_synced": "{{TODAY}}",
+  "overrides": []
+}

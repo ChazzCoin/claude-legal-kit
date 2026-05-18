@@ -1,0 +1,44 @@
+# Parties — {{MATTER_NAME}}
+
+This matter's view of the parties. Cross-matter party data lives in `firm/practice-registry/parties/` and `firm/practice-registry/opposing-counsel/`.
+
+## Client
+
+- **Name:** {{CLIENT_NAME}}
+- **Role:** {{CLIENT_ROLE}}
+- **Type:** {{CLIENT_TYPE}}
+- **Registry stamp:** `firm/practice-registry/parties/{{CLIENT_STAMP_FILE}}`
+- **Contact:** see [INTAKE.md](INTAKE.md)
+
+## Adverse party
+
+- **Name:** {{OPPOSING_PARTY}}
+- **Role:** {{OPPOSING_ROLE}}
+- **Type:** {{OPPOSING_TYPE}}
+- **Registry stamp:** `firm/practice-registry/parties/{{OPPOSING_STAMP_FILE}}`
+
+## Opposing counsel
+
+- **Firm:** {{OPPOSING_FIRM}}
+- **Attorney:** {{OPPOSING_ATTORNEY}}
+- **Contact:** {{OPPOSING_COUNSEL_CONTACT}}
+- **Registry stamp:** `firm/practice-registry/opposing-counsel/{{OPPOSING_COUNSEL_STAMP_FILE}}`
+
+## Other parties
+
+| Name | Role | Type | Notes | Registry stamp |
+|---|---|---|---|---|
+
+## Witnesses
+
+| Name | Role / What they know | Status | Notes |
+|---|---|---|---|
+
+## Experts
+
+| Name | Specialty | Retained by | Notes | Registry stamp |
+|---|---|---|---|---|
+
+## Notes on parties
+
+(Narrative space for relationship dynamics, communication history, things that don't fit a table cell.)
