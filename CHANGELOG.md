@@ -2,6 +2,32 @@
 
 All notable changes to the kit. Newest first.
 
+## v0.2.0 — 2026-05-18
+
+Phase 1 — roles, identity, conduct, and the metadata model. The kit gains a role-aware behavioral model, a deterministic identity layer, and a linking-and-tagging convention. Design of record: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+### Added
+
+- **`docs/ARCHITECTURE.md`** — the kit's design: the two-structure model (public kit repo / private firm home), the two sync planes, roles, the identity hooks, role-aware conduct, the linking/tagging information graph, and an honest account of what access is and isn't enforced.
+- **`conduct/roles.md`** — the role model. Two families — legal (Partner, Associate, Of Counsel, Paralegal, Legal Assistant, Investigator) and technical (Engineer) — and the split between universal rules (confidentiality, the private vault, save/load safety, confirm-before-delete — never relax) and role-varying conduct.
+- **The identity hooks framework** — `.claude/hooks/session-start.sh`, a SessionStart hook that resolves the active user from a per-machine marker against `members/users.json` and either orients the session or halts it; `.claude/hooks/setup-user.sh`, the once-per-machine registration script; and kit-owned `.claude/settings.json` registering the hook. Deterministic and shell-level — the assistant is never in the identity loop.
+- **`vocabulary/LINKING-AND-TAGGING.md`** — the metadata convention: `id`/`type`/`tags`/`refs` frontmatter, the `@<type>:<id>` handle scheme, and controlled tags drawn from the vocabulary. It formalizes and unifies the kit's existing pieces (the vocabulary, the research-library IDs, the registry stamps) rather than adding a parallel system.
+- **Root `CLAUDE.md`** — orientation for any session working on the kit itself.
+
+### Changed
+
+- **`conduct/communication.md` and `conduct/save-load.md` are now role-aware** — the plain-English communication and the save/load vocabulary apply to legal-role sessions; an engineer-role session uses normal technical communication. The universal safety and confidentiality rules bind every session, every role.
+- **Member visibility** — `members/README.md` and the member template were rewritten for flat firm-visibility. The old "private by default" framing was never enforced — member folders were always tracked in the shared firm repository — so the model is now stated honestly, with a firm-work-only policy.
+- **Registry stamp formats** — the five `practice-registry/` stamp formats now lead with the `id`/`type`/`tags`/`refs` convention; matter links are `@matter:` handles.
+- **`MANIFEST.json`** — new entries for the identity hooks and `settings.json`; version bumped to 0.2.0.
+- **Decontamination (partial)** — removed an origin-firm drive path from the member template and genericized Alabama-specific examples in the courts registry stamp.
+
+### Next
+
+- Phase 2 — decontamination: jurisdiction-neutralize the rules-of-practice files and `vocabulary/jurisdictions.md`.
+- The new-matter templates pick up convention frontmatter when their document-type taxonomy is settled, alongside the `/intake` skill build-out.
+- Phase 3 — the first real firm deployment.
+
 ## v0.1.0 — 2026-05-18
 
 Initial extraction — a standalone, sync-able legal kit.

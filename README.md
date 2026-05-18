@@ -2,13 +2,14 @@
 
 A portable Claude Code foundation for **law firms**. One source of truth for how a firm works with Claude — the conduct rules, the rules of practice, the skills, the document templates, the firm structure — that installs into any firm's home folder and stays current through a one-way sync.
 
-Modeled on [claude-kit](https://github.com/ChazzCoin/claude-kit) (the general-purpose engineering foundation), rebuilt for litigation practice.
+Modeled on [claude-kit](https://github.com/ChazzCoin/claude-kit) (the general-purpose engineering foundation), rebuilt for litigation practice. The full design is in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## What this is
 
 A law firm running Claude Code keeps a **firm home** — a folder holding its configuration, matters, members, and accumulated knowledge. claude-legal-kit supplies the generic, firm-agnostic *foundation* of that home:
 
-- **Conduct rules** (`firm/practice-kit/conduct/`) — the binding behavioral contract: plain English only, Claude offers rather than instructs, the "Claude wants to…" permission format, and the *save / load / delete* metaphor that keeps version control invisible to non-technical users. This is the core of the kit.
+- **Conduct rules** (`firm/practice-kit/conduct/`) — the binding behavioral contract: plain English, Claude offers rather than instructs, the "Claude wants to…" permission format, and the *save / load / delete* metaphor that keeps version control invisible to non-technical users.
+- **Roles & identity** (`firm/practice-kit/conduct/roles.md`, `.claude/hooks/`) — a per-firm user directory and a session-start hook that resolves who is working; conduct adapts to the role — legal staff get the plain-English contract, the maintaining engineer gets normal technical communication.
 - **Rules of practice** (`firm/practice-kit/shared-library/rules/`) — privilege, conflicts, deadlines, retention, Bates numbering.
 - **Skills** (`firm/practice-kit/shared-library/skills/`) — `/intake` and more, run on demand.
 - **Document templates, integrations, controlled vocabulary, a research-library structure** — the rest of the practice kit.
@@ -20,7 +21,7 @@ Firm-specific facts — the firm's name, office, people, actual matters — are 
 
 ```
 claude-legal-kit  ──install / sync──▶  a firm's home  ──/intake──▶  each matter's .claude/
-   (this repo)                         (e.g. springer-romeo)        (bootstrapped per matter)
+   (this repo)                         (private, per firm)         (bootstrapped per matter)
 ```
 
 1. **Kit → firm.** This repo's `MANIFEST.json` governs what installs into a firm home and how. `bin/init` bootstraps a firm; the `/sync` workflow pulls later kit improvements.
@@ -37,7 +38,7 @@ claude-legal-kit/bin/init /path/to/firm-home
 
 `bin/init` is non-destructive and idempotent. It reads `MANIFEST.json` and applies each file by its policy; it never overwrites a firm's own files; it stamps `.claude/foundation.json` with the kit commit it installed from. Running it again is safe.
 
-After install: fill the `{{PLACEHOLDERS}}` in `CLAUDE.md` and `firm/FIRM.md`, add a file under `drives/` per storage location, and copy `members/_template/` once per firm member.
+After install: fill the `{{PLACEHOLDERS}}` in `CLAUDE.md` and `firm/FIRM.md`, add a file under `drives/` per storage location, copy `members/_template/` once per firm member, and run `.claude/hooks/setup-user.sh` on each person's machine so the identity hook can resolve them.
 
 ## Sync — pull later kit updates
 
@@ -61,9 +62,12 @@ claude-legal-kit/
 ├── kit/             # files synced into a firm home (firm-agnostic)
 │   ├── firm/        #   the practice-kit + practice-registry structure
 │   ├── members/     #   the per-member workspace template
-│   └── drives/      #   the drive-registry guide
+│   ├── drives/      #   the drive-registry guide
+│   └── .claude/     #   the /sync skill + the identity hooks
 ├── bootstrap/       # one-time firm files: CLAUDE.md, FIRM.md, .gitignore, foundation.json
-├── bin/             # init + check-manifest
+├── bin/             # init, check-manifest, sync-report
+├── docs/            # ARCHITECTURE.md — the kit's design
+├── CLAUDE.md        # orientation for working on the kit itself
 ├── MANIFEST.json    # authoritative inventory + install policies
 ├── CHANGELOG.md
 └── README.md
@@ -71,4 +75,4 @@ claude-legal-kit/
 
 ## Status
 
-**v0.1.0 — initial extraction.** The structure, machinery, and sync wiring (`MANIFEST.json`, `bin/init`, the `foundation.json` pin) are in place. Much of the kit *content* is still skeleton — folders carry READMEs describing what they will hold — and some rule files still carry jurisdiction-specific (Alabama) and firm-specific detail from the kit's origin. See [`CHANGELOG.md`](CHANGELOG.md) for the known limitations and what comes next.
+**v0.2.0 — roles, identity, and the metadata model.** The install and sync machinery, the `/sync` skill, a role-aware conduct model, a deterministic identity layer (a SessionStart hook plus a per-firm user directory), and the linking-and-tagging convention are all in place. Still ahead: a decontamination pass to strip the last origin-firm and jurisdiction-specific detail, and the first real firm deployment. See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full design and [`CHANGELOG.md`](CHANGELOG.md) for history and what's next.
