@@ -24,16 +24,15 @@ Governing rules: **Ala. R. Prof. Conduct 1.7** (current clients), **1.9** (forme
 
 ### Imputed conflicts (Rule 1.10)
 - Conflicts of one attorney in the firm impute to **all attorneys** in the firm
-- **Bruce cannot take a matter Stewart is conflicted on** without informed consent of all affected clients in writing
-- Mills McWhorter's prior work history can also create imputed conflicts (if she previously worked at a firm that handled the matter or an adverse matter)
+- **No attorney can take a matter another attorney in the firm is conflicted on** without informed consent of all affected clients in writing
+- A non-lawyer staff member's prior work history can also create imputed conflicts (if they previously worked at a firm that handled the matter or an adverse matter)
 
-### Special imputed-conflict considerations for this firm
+### Prior-practice imputed conflicts
 
-- **Bruce's prior firms** — Mezrano Law Firm; Romeo Law Firm, LLC (solo)
-- **Stewart's prior practice** — Springer Law Firm (solo) 1990–2024
-- **Mills's prior firms** — confirm at hiring and document
+Every member arrives with a history — prior firms, a prior solo practice, prior employment. Each can carry an imputed conflict into a current matter if substantially related.
 
-A matter from any of those prior practices can create an imputed conflict for Springer Romeo today if substantially related.
+- Record each member's prior firms and practices — on hire, in that member's workspace profile.
+- A matter from any member's prior practice can create an imputed conflict for the firm today if substantially related. Check the prior practices, not only the firm's own matter history.
 
 ## How the firm runs the check
 
@@ -41,10 +40,8 @@ A matter from any of those prior practices can create an imputed conflict for Sp
 2. **Search the practice registry:**
    - `firm/practice-registry/parties/` — every party the firm has represented or opposed
    - `firm/practice-registry/opposing-counsel/` — every firm faced
-3. **Search legacy folders:**
-   - `Cases/` on T7 Shield — active matters not yet migrated to the new structure
-   - `Cases/Closed/` on T7 Shield — closed legacy matters
-4. **Check members' prior firms** — Mezrano, the prior Romeo Law Firm LLC, prior Springer Law Firm. Mills's prior employment.
+3. **Search any legacy folders** — case folders from before the firm adopted this structure, active and closed, wherever they live (an older drive, an archive folder).
+4. **Check members' prior firms** — each member's prior firms, prior solo practice, and prior employment, as recorded in their workspace profile.
 5. **Classify the result:**
    - **Clear** — no prior involvement found
    - **Possible conflict** — prior involvement that may or may not be a conflict; needs attorney evaluation

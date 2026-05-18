@@ -68,7 +68,7 @@ When closing a matter, the firm:
 ## Destruction procedure
 
 When the retention clock runs:
-1. **Partner approval required** — Bruce or Stewart signs off in writing before any destruction
+1. **Partner approval required** — a partner signs off in writing before any destruction
 2. Generate a destruction-log entry (what's destroyed, when, by whom, retention basis)
 3. Securely destroy: cross-cut shredding for paper, secure-wipe for digital (multiple-pass overwrite or secure-erase command)
 4. Keep the destruction log **indefinitely** (audit trail)
