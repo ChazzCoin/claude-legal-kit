@@ -30,12 +30,23 @@ This README is about level 1.
 
 ## Install — bootstrap a new firm home
 
+**macOS / Linux:**
+
 ```sh
 git clone https://github.com/ChazzCoin/claude-legal-kit
 claude-legal-kit/bin/init /path/to/firm-home
 ```
 
-`bin/init` is non-destructive and idempotent. It reads `MANIFEST.json` and applies each file by its policy; it never overwrites a firm's own files; it stamps `.claude/foundation.json` with the kit commit it installed from. Running it again is safe.
+**Windows:**
+
+```powershell
+git clone https://github.com/ChazzCoin/claude-legal-kit
+claude-legal-kit\bin\init.ps1 -Target C:\path\to\firm-home
+```
+
+Every kit script is paired — a bash `.sh`/no-extension flavor and a PowerShell `.ps1` flavor with identical behavior — so the kit serves firms on either operating system. Run the one for your machine; see [`bin/README.md`](bin/README.md). The PowerShell ports need only `git`; the bash scripts also use `python3`.
+
+`bin/init` is non-destructive and idempotent. It reads `MANIFEST.json` and applies each file by its policy; it never overwrites a firm's own files; it stamps `.claude/foundation.json` with the kit commit it installed from. It also installs `.claude/settings.json`, whose `SessionStart` hook records the operating system in `.claude/platform.json` each session — that is how Claude knows which script flavor to run inside the firm (the binding rule is `conduct/running-scripts.md`). Running `init` again is safe.
 
 After install: fill the `{{PLACEHOLDERS}}` in `CLAUDE.md` and `firm/FIRM.md`, add a file under `drives/` per storage location, and copy `members/_template/` once per firm member.
 
@@ -62,8 +73,8 @@ claude-legal-kit/
 │   ├── firm/        #   the practice-kit + practice-registry structure
 │   ├── members/     #   the per-member workspace template
 │   └── drives/      #   the drive-registry guide
-├── bootstrap/       # one-time firm files: CLAUDE.md, FIRM.md, .gitignore, foundation.json
-├── bin/             # init + check-manifest
+├── bootstrap/       # one-time firm files: CLAUDE.md, FIRM.md, .gitignore, settings.json, foundation.json
+├── bin/             # init + check-manifest — paired bash + PowerShell flavors
 ├── MANIFEST.json    # authoritative inventory + install policies
 ├── CHANGELOG.md
 └── README.md

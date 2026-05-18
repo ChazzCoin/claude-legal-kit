@@ -1,9 +1,10 @@
 # conduct/
 
-How Claude **conducts itself** inside a firm that runs this kit — the binding behavioral rules. Two rules live here:
+How Claude **conducts itself** inside a firm that runs this kit — the binding behavioral rules. Three rules live here:
 
 - **[communication.md](communication.md)** — plain English, offers-not-instructions, the permission-line format, legal framing, proactiveness, confidentiality.
 - **[save-load.md](save-load.md)** — the *save / load / delete* metaphor for moving work to and from the cloud, and how disagreements are handled without losing anyone's work.
+- **[running-scripts.md](running-scripts.md)** — running the right script flavor for the operating system: `.ps1` on Windows, `.sh` on macOS/Linux, chosen from `.claude/platform.json`.
 
 ## Status
 

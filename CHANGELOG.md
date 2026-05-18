@@ -2,6 +2,25 @@
 
 All notable changes to the kit. Newest first.
 
+## Unreleased
+
+### Added — cross-platform scripts
+
+The kit now serves firms on **Windows** alongside macOS/Linux. Every script ships in two flavors with identical behavior — a bash `.sh`/no-extension flavor and a PowerShell `.ps1` flavor.
+
+- **`bin/init.ps1`, `bin/check-manifest.ps1`** — Windows-native ports of the two `bin/` scripts. Self-contained: they parse `MANIFEST.json` with PowerShell's `ConvertFrom-Json` and drop the `python3` dependency the bash scripts carry (Python is not on a default Windows install; PowerShell is). Run under Windows PowerShell 5.1 and PowerShell 7+. Verified to produce a byte-identical firm home to the bash `bin/init`.
+- **`kit/firm/practice-kit/scripts/detect-platform.sh` / `.ps1`** — detect the operating system and write `.claude/platform.json`.
+- **`kit/firm/practice-kit/scripts/{new-matter,sync-matter,new-member}.{sh,ps1}`** — paired skeleton stubs for the planned matter/member scripts, so the pairing pattern is set.
+- **`bootstrap/settings.json.template`** → `.claude/settings.json` — a new firm-owned bootstrap file (`skip-if-exists`). Carries a `SessionStart` hook that runs the platform detector each session, keeping `.claude/platform.json` correct even when a firm home moves between a Windows machine and a Mac.
+- **`kit/firm/practice-kit/conduct/running-scripts.md`** — a third conduct rule: Claude reads `.claude/platform.json` and runs the `.ps1` flavor on Windows, the `.sh` flavor on macOS/Linux, with a self-detect fallback if the config is missing.
+- **`bin/README.md`** — documents the paired-script layout and per-OS requirements.
+
+### Changed
+
+- `bin/init` now writes `.claude/platform.json` at install (via the detector).
+- `MANIFEST.json` registers `settings.json.template`; `gitignore.template` ignores the machine-specific `.claude/platform.json`.
+- `bootstrap/CLAUDE.md.template`, `conduct/README.md`, `scripts/README.md`, and `README.md` updated for the third conduct rule, the Windows install path, and the paired-script convention.
+
 ## v0.1.0 — 2026-05-18
 
 Initial extraction — a standalone, sync-able legal kit.

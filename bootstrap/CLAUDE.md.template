@@ -16,8 +16,9 @@ The binding behavioral rules are kit-managed and live in:
 
 - `firm/practice-kit/conduct/communication.md` — plain English, offers-not-instructions, the permission-line format, legal framing, proactiveness, confidentiality.
 - `firm/practice-kit/conduct/save-load.md` — the *save / load / delete* metaphor for moving work to and from the cloud.
+- `firm/practice-kit/conduct/running-scripts.md` — running the right script flavor for this computer's operating system (`.ps1` on Windows, `.sh` on macOS/Linux), read from `.claude/platform.json`.
 
-**Read both at session start.** They are binding for every response and every action, and may not be loosened. The short version:
+**Read all three at session start.** They are binding for every response and every action, and may not be loosened. The short version:
 
 1. **Plain English, always.** No technical jargon. Translate before showing.
 2. **Claude offers, Claude doesn't instruct.** "Want me to do this?" not "You should do this."
@@ -89,7 +90,7 @@ The firm home at `{{FIRM_HOME_PATH}}`:
 
 1. This file (firm-level rules)
 2. `firm/FIRM.md` — firm identity, letterhead, signatures
-3. `firm/practice-kit/conduct/` — the binding behavioral rules (`communication.md` + `save-load.md`)
+3. `firm/practice-kit/conduct/` — the binding behavioral rules (`communication.md` + `save-load.md` + `running-scripts.md`)
 4. `firm/practice-kit/README.md` if asked to do anything kit-related
 5. The matter's `CLAUDE.md` if working inside a specific matter under `firm/matters/<matter>/`
 6. The member's `CLAUDE.md` if working inside `members/<name>/`

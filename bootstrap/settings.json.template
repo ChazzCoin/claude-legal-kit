@@ -1,0 +1,23 @@
+{
+  "$comment": "Firm-owned Claude Code settings. Installed once by bin/init and never overwritten by /sync — the firm owns this file. The SessionStart hooks below run the kit's platform detector at the start of every session: whichever one matches the operating system writes .claude/platform.json, so Claude knows to run the .ps1 kit scripts on Windows and the .sh scripts on macOS/Linux. The non-matching hook simply fails to launch and is ignored (SessionStart hooks are non-blocking). See firm/practice-kit/conduct/running-scripts.md.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"firm/practice-kit/scripts/detect-platform.sh\" ; exit 0"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"firm/practice-kit/scripts/detect-platform.ps1\""
+          }
+        ]
+      }
+    ]
+  }
+}

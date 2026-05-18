@@ -67,6 +67,12 @@
         "note": "Keeps the private vault and client matters off the cloud."
       },
       {
+        "from": "bootstrap/settings.json.template",
+        "to": ".claude/settings.json",
+        "policy": "skip-if-exists",
+        "note": "Firm-owned Claude Code settings. Carries the SessionStart hook that runs the kit's platform detector each session — it writes .claude/platform.json so Claude runs the .ps1 scripts on Windows and the .sh scripts on macOS/Linux. The firm owns this file; /sync never overwrites it."
+      },
+      {
         "from": "bootstrap/foundation.json",
         "to": ".claude/foundation.json",
         "policy": "init-only-with-sha",
