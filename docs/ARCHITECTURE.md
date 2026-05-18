@@ -132,7 +132,66 @@ A firm home is an information graph — people, parties, matters, rules, researc
 
 The payoff: Claude can traverse the graph — everything about a party, everything tagged a topic, every document citing a research source — and the build-out itself becomes graph-guided. The **convention** ships now — a spec doc, plus the `id`/`type`/`tags`/`refs` frontmatter baked into every template and registry file so new content is born tagged. Traversal is by search. A validator or index generator (a `check-manifest`-style check for dangling `@`-refs and off-vocabulary tags) is deferred — it earns its keep once there is a body of content to check.
 
-## 10. What the kit must never contain
+## 10. Document management — the firm's file index
+
+A firm runs on thousands of documents — matter files, evidence, correspondence, legacy case archives — scattered across drives and folders with no catalog. The `drives/` registry (§2) tracks storage *locations*; the research-library catalogs *external* research. Neither indexes the firm's own document mass. The document index closes that gap: it turns the scatter into a queryable inventory and makes working with files — individually and in groups — a directed operation rather than a filesystem hunt.
+
+### Metadata only — the index never holds content
+
+The index records data *about* each file; it never copies a file's content. This is the drive-plane privilege boundary (§2) applied: matter documents stay on controlled storage, and the index is pointers and derived metadata, nothing more.
+
+A file's identity is its **content hash** (SHA-256), not its path. One logical document can have many instances — the same PDF in four folders across two drives is one document, four locations. Deduplication and the scattered-copies problem fall directly out of this. A computed identity is also the only kind that scales: the research-library's hand-assigned `REF-NNNN` works because references are added one at a time; a mechanically-crawled mass of thousands cannot be hand-numbered.
+
+### Where the index lives
+
+One `index.db` per firm home, on the **drive plane** — gitignored, never pushed to the git remote. An index of matter filenames is itself sensitive (a filename names a client and a matter), so it takes the same posture as the documents it describes.
+
+It is a **SQLite** file: a single file, byte-identical across operating systems, read and written through Python's standard-library `sqlite3` — no server, no database dependency to install. The `.db` is a **query layer, not the system of record**. The mechanical layer (path, hash, size, modified-time) is regenerable at any time by re-crawling. The organizational layer (matter assignments, tags, collections — the work that costs something to produce) is additionally written out to a plain-text JSONL file that is diffable, inspectable, and the artifact actually trusted for durability. A full rebuild is: crawl the drives, replay the JSONL.
+
+### Drives are identified by volume, not by mount path
+
+A removable drive mounts at `/Volumes/<name>` on macOS and at a drive letter on Windows — and the Windows letter changes between one plugging-in and the next. A mount path is not a stable identity.
+
+The `drives/` registry therefore records a **stable volume identifier** (volume UUID or serial number); the live mount point is resolved at runtime, per machine. The index stores **drive-relative paths together with the stable drive ID** — never absolute paths. One `index.db` is then correct on any machine and either operating system. This supersedes the mount-path keying described in the current `drives/` guide, which is fragile on macOS and unworkable on Windows.
+
+### Cross-platform — macOS and Windows, equally
+
+This layer must run identically on both platforms. The consequences:
+
+- Everything executable in it is **Python**, standard library only for v1 — the one runtime that is genuinely equal on both. No shell scripts.
+- SQLite access, hashing, directory walking, and path handling are all standard-library and behave identically on both.
+- `python3` is a setup prerequisite on both platforms — neither ships it ready to use — and its invocation differs (`python3` versus `python` / `py`); the tooling and skills account for both.
+
+### The pipeline is tiered
+
+Indexing has a cost gradient. The pipeline is staged so the index is useful the moment the cheapest tier completes, and the expensive tiers run only where they earn it.
+
+| Tier | Produces | Cost | Scope |
+|---|---|---|---|
+| 0 — crawl | path, hash, size, modified-time, extension, drive | free, mechanical | every file |
+| 1 — text extract | born-digital text → full-text search | cheap, no model | files with a text layer |
+| 2 — OCR | text from scanned / image files | slow | flagged files |
+| 3 — classify | document-type, matter, tags by reading content | expensive, model | on demand |
+
+**v1 builds Tier 0 only.** Tiers 1–3 — full-text search, OCR, and content-based classification — are deferred. The schema ships with their tables present but unpopulated, so adding them later is a feature switch, not a migration.
+
+### v1 is a management layer, not a search layer
+
+A firm's files stay a jumbled mess for one reason: reorganizing thousands of them is too risky — links break, copies diverge, things are lost, and there is no record of what moved. The index removes that risk, and that — not search — is what v1 delivers.
+
+- **Hash-identity** means a file moved from one folder to another is provably the same document. Re-crawling detects the move: a known hash at a new path is a relocation, not a deletion plus a new file. The catalog self-heals.
+- An **audit log** records every move, rename, and content change — provenance, and a safety net that makes reorganization reversible.
+- Two modes share one engine: **observe** (the firm reorganizes however it likes; a re-crawl tracks it) and **act** (Claude proposes and applies a reorganization — a folder structure, a naming convention — transactionally and under the conduct rules of §6: proposed, confirmed, logged, never destructive).
+- **Path-based classification is in v1.** A filename and its folder carry matter, document-type, and date signal that needs no reading of content. Content-based classification — Claude reading the file — is what is deferred with Tier 3.
+- **Collections** — a named set of documents, either a static list or a saved metadata query — are the group primitive. They are the unit batch operations run over, and the answer to "work with files in groups."
+
+The index is also a queryable face of the §9 information graph: documents become nodes, and matter and party handles become edges. "Every document in this matter," "every copy of this file," "everything assigned to this party" are graph traversals.
+
+### What the kit ships
+
+The kit is public; a populated index is firm data and never enters it (§11). The kit ships the **machinery**: `schema.sql` (designed for the whole pipeline, Tiers 1–3 included), the Python indexer, and the management skills — `/index` to crawl and refresh, plus locate, deduplicate, organize, matter-linking, and collections. A firm's `index.db` is born empty from the shipped schema and filled by crawling that firm's own drives.
+
+## 11. What the kit must never contain
 
 Rule #2, as a standing constraint on every change to this repo:
 
@@ -163,3 +222,10 @@ Before a release: run `bin/check-manifest`, and scan the tree for leaked specifi
 
 **Phase 3 — firm deployment** *(not kit work)*
 - Stand up a firm home with real firm data: `FIRM.md`, members and roles, `users.json`, the private firm repo, the drive registry, and a first `/sync`.
+
+**Phase 4 — the document management layer** *(designed; not built — §10. Kit work, independent of Phase 3.)*
+- The cross-platform Python indexer (Tier 0 crawl), `schema.sql`, and the `index.db` query layer with its JSONL durability export.
+- The `drives/` registry reworked onto stable volume identifiers with runtime mount resolution; drive-relative paths in the index.
+- The management skills: `/index`, locate, deduplicate, organize, matter-linking, collections.
+- New `MANIFEST.json` entries for the schema, the indexer, and the skills.
+- *Open decision:* the kit's existing tooling — the identity hooks, `bin/`, the practice-kit scripts — is already cross-platform as of v0.4.0, by shipping a paired `.sh` and `.ps1` flavor of every script. Phase 4 introduces a third pattern: Python (the only runtime genuinely equal on both, and the right fit for the indexer's SQLite/hashing/crawl work). The open question is whether to leave the two patterns side by side — paired shell scripts for the install/identity layer, Python for the document layer — or consolidate the shell pairs into single Python implementations so the kit has one executable language. Consolidation is cleaner but discards working, verified `.ps1` ports; it is not required for cross-platform support, which v0.4.0 already delivers.

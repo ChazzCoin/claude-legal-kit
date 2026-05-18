@@ -2,6 +2,12 @@
 
 All notable changes to the kit. Newest first.
 
+## Unreleased
+
+### Added
+
+- **`docs/ARCHITECTURE.md` §10 — the document management layer.** Design for a firm-wide file index: a metadata-only SQLite catalog (`index.db`) on the drive plane that identifies documents by content hash, tracks every instance across drives, and makes reorganizing a firm's scattered files safe. Cross-platform by design (Python, macOS and Windows equally); drives keyed by a stable volume identifier rather than a mount path. v1 is a *management* layer — inventory, deduplication, safe reorganization, matter-linking, collections — with full-text search, OCR, and content-based classification scoped as deferred tiers. Tracked as Phase 4 in the implementation status.
+
 ## v0.4.0 — 2026-05-18
 
 Cross-platform support and secure new-member onboarding — merged from a parallel branch (PR #1).
@@ -14,9 +20,11 @@ The kit now serves firms on **Windows** alongside macOS/Linux. Scripts ship in t
 - **`kit/firm/practice-kit/scripts/detect-platform.sh` / `.ps1`** — detect the operating system and write `.claude/platform.json`.
 - **`kit/firm/practice-kit/scripts/{new-matter,sync-matter,new-member}.{sh,ps1}`** — paired skeleton stubs for the planned matter/member scripts.
 - **`conduct/running-scripts.md`** — a conduct rule: Claude reads `.claude/platform.json` and runs the `.ps1` flavor on Windows, the `.sh` flavor on macOS/Linux, with a self-detect fallback.
+- **`bin/sync-report.ps1`** — Windows-native port of the `/sync` reconciliation engine. Pure PowerShell, needs only `git` (no `python3`); compares files by git blob hash, a byte-exact content comparison. Verified to produce byte-identical reports to `bin/sync-report`.
+- **`kit/.claude/hooks/session-start.ps1`, `setup-user.ps1`** — Windows-native ports of the identity hook and the once-per-machine registration script, so a Windows firm gates sessions and registers users exactly as macOS/Linux does.
 - **`bin/README.md`** — documents the paired-script layout and per-OS requirements.
 
-The kit-owned `.claude/settings.json` SessionStart hook now runs the platform detector each session, alongside the identity hook — keeping `.claude/platform.json` correct as a firm home moves between machines.
+With these the kit is **fully cross-platform** — every script ships a `.sh` and a `.ps1` flavor. The kit-owned `.claude/settings.json` now carries four `SessionStart` hooks: the identity hook in both flavors (`session-start.sh` / `.ps1`) and the platform detector in both — the OS-appropriate flavor runs, the other fails to launch and is ignored. The detector keeps `.claude/platform.json` correct as a firm home moves between machines.
 
 ### Added — new-member onboarding
 
@@ -31,7 +39,6 @@ A two-sided flow for connecting a new firm member's computer to a firm's **priva
 - `bin/init` now writes `.claude/platform.json` at install.
 - `gitignore.template` ignores the machine-specific `.claude/platform.json`.
 - `conduct/README.md`, `scripts/README.md`, `skills/README.md`, `bootstrap/CLAUDE.md.template`, and `README.md` updated for the new conduct rule, the Windows install path, the paired-script convention, and the onboarding flow.
-
 ## v0.3.0 — 2026-05-18
 
 Phase 2 — decontamination. The kit was extracted from a working firm and still carried that firm's identity, and its state's law as if it were universal. Both are gone: the kit is now genuinely firm-agnostic, and jurisdiction-specific law lives in swappable modules.
