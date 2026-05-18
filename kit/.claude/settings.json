@@ -1,10 +1,15 @@
 {
-  "$comment": "Kit-owned Claude Code settings. The SessionStart hooks run at the start of every session: the identity hook resolves the active user, and the platform detector records the operating system in .claude/platform.json (so Claude runs the .ps1 kit scripts on Windows, the .sh scripts on macOS/Linux). A hook whose interpreter is absent on the current OS simply fails to launch and is ignored — SessionStart hooks are non-blocking, except the identity hook, which is meant to gate the session. See firm/practice-kit/conduct/roles.md and firm/practice-kit/conduct/running-scripts.md.",
+  "$comment": "Kit-owned Claude Code settings. The SessionStart hooks run at the start of every session: the identity hook resolves the active user (session-start.sh on macOS/Linux, session-start.ps1 on Windows — paired, identical behavior), and the platform detector records the operating system in .claude/platform.json (so Claude runs the .ps1 kit scripts on Windows, the .sh scripts on macOS/Linux). A hook whose interpreter is absent on the current OS simply fails to launch and is ignored — SessionStart hooks are non-blocking, except the identity hook, which is meant to gate the session; the OS-appropriate flavor does the gating. See firm/practice-kit/conduct/roles.md and firm/practice-kit/conduct/running-scripts.md.",
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           { "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.sh\"" }
+        ]
+      },
+      {
+        "hooks": [
+          { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.ps1\"" }
         ]
       },
       {
