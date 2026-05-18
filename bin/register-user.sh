@@ -117,6 +117,7 @@ if [ ! -f "$CONFIG" ] || \
     echo "    User git"
     echo "    IdentityFile $KEY"
     echo "    IdentitiesOnly yes"
+    echo "    StrictHostKeyChecking accept-new"
   } >> "$CONFIG"
   chmod 600 "$CONFIG" 2>/dev/null || true
 fi

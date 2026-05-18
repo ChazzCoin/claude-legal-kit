@@ -148,6 +148,7 @@ Host $HostAlias
     User git
     IdentityFile $Key
     IdentitiesOnly yes
+    StrictHostKeyChecking accept-new
 "@
   Add-Content -LiteralPath $ConfigFile -Value $block
 }
