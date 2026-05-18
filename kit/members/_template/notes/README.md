@@ -1,6 +1,6 @@
 # notes/
 
-Personal notes. Organize however you want.
+Your own working notes — observations, research, meeting and call notes. Organize however you want.
 
 ## Common patterns
 
@@ -11,7 +11,7 @@ Personal notes. Organize however you want.
 
 ## What's the difference vs a matter's `08-Notes/`?
 
-- **Here:** personal observations, half-formed thoughts, drafts of ideas. Private.
-- **Matter's `08-Notes/`:** durable file notes that belong in the official matter record. Shared with anyone working the matter.
+- **Here:** working notes — observations, half-formed thoughts, drafts of ideas. Firm-visible like everything in the project, but not part of any matter's official record.
+- **Matter's `08-Notes/`:** durable file notes that belong in the official matter record.
 
-The `/file-note` skill writes here by default. The `/handoff` skill reads from here to package context when handing off work to a teammate.
+The `/file-note` skill writes here by default. Notes here are also a natural place to draw context from when handing work to a teammate.

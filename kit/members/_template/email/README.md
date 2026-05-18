@@ -1,6 +1,6 @@
-# email/ — personal email workspace
+# email/ — your email workspace
 
-Your private space for drafting emails, tracking conversations, and keeping email-related notes. Not visible to the firm by default. Same confidentiality rules as the rest of `members/<you>/` apply.
+Your email workspace for drafting emails, tracking conversations, and keeping email-related notes. Firm-visible like the rest of the project; the firm's confidentiality rules apply in full.
 
 ## What lives here
 
@@ -56,6 +56,6 @@ These files sit on your Mac. Save and load using the firm's normal save/load —
 
 ## Boundaries
 
-- **Personal.** Other members can't see your `email/` folder by default.
-- **Still privileged.** Drafts are still attorney work product — same confidentiality rules.
+- **Yours, but firm-visible.** This is your workspace — yours to work in — but like everything in the project it is visible to the whole firm. Keep only firm work here.
+- **Still privileged.** Drafts are attorney work product — the firm's confidentiality rules apply, no external transmission without explicit confirmation.
 - **Promote when it matters.** When an email becomes part of a matter's record (a settlement offer, a discovery dispute, formal correspondence with opposing counsel), move the sent copy into `firm/matters/<Matter>/04-Correspondence/`.
