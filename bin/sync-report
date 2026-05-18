@@ -1,0 +1,281 @@
+#!/usr/bin/env bash
+#
+# claude-legal-kit sync-report — the reconciliation engine behind the
+# /sync skill ("load the latest kit updates").
+#
+# A firm home does NOT contain the kit. The /sync skill first fetches the
+# kit (a fresh, COMPLETE clone), then runs THIS script from inside that
+# clone. The script is READ-ONLY: it inspects, classifies, and prints a
+# report — it changes nothing. The skill is what applies changes, with
+# the firm's permission, file by file.
+#
+# Usage:
+#   <kit-clone>/bin/sync-report <firm-home-dir>
+#
+# It compares every kit-managed file (the kit.files[] entries in
+# MANIFEST.json, minus opt-in) three ways:
+#
+#   base   the file in the kit at the commit the firm last loaded
+#          (the firm's .claude/foundation.json -> "pinned_sha")
+#   kit    the file in the kit now (this clone)
+#   firm   the firm's installed copy
+#
+# and classifies the drift:
+#
+#   UPDATE       kit changed it, firm copy untouched      -> safe to load
+#   NEW          kit added it, firm has no copy           -> safe to load
+#   REMOVE       kit dropped it, firm copy untouched      -> safe to remove
+#   OVERRIDE     firm changed it, kit did not             -> keep firm's copy
+#   CONFLICT     BOTH changed it                          -> needs a decision
+#   MISSING      kit has it, firm copy is gone            -> needs a decision
+#   GONE-EDITED  kit dropped it, but firm had edited it   -> needs a decision
+#   (files that match all three ways are not reported)
+#
+# Bootstrap files (CLAUDE.md, FIRM.md, .gitignore, foundation.json) are
+# the firm's own — never kit-managed, never reported here.
+#
+# Output is grouped and human-readable; every data line is also
+# TAB-separated — "<TOKEN><TAB><firm-path><TAB><kit-path>" — for the skill
+# to parse, alongside KIT-CLONE / PINNED-SHA / HEAD-SHA / PIN-CAN-ADVANCE /
+# SUMMARY metadata lines. Exit 0 on a successful report (conflicts
+# included); exit 1 only on an operational error.
+#
+# Requires python3 and git — same as bin/init.
+
+set -euo pipefail
+
+# ─── Resolve firm home + kit location ──────────────────────────────────────
+if [ "$#" -lt 1 ] || [ -z "${1:-}" ]; then
+  echo "usage: bin/sync-report <firm-home-dir>" >&2
+  exit 1
+fi
+FIRM="$1"
+if [ ! -d "$FIRM" ]; then
+  echo "ERROR: firm home not found: $FIRM" >&2
+  exit 1
+fi
+FIRM="$(cd "$FIRM" && pwd)"
+
+KIT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+MANIFEST="$KIT_DIR/MANIFEST.json"
+
+# ─── Preflight ─────────────────────────────────────────────────────────────
+for tool in python3 git; do
+  if ! command -v "$tool" >/dev/null 2>&1; then
+    echo "ERROR: bin/sync-report requires $tool — install it and re-run." >&2
+    exit 1
+  fi
+done
+if [ ! -f "$MANIFEST" ]; then
+  echo "ERROR: MANIFEST.json not found at $MANIFEST" >&2
+  exit 1
+fi
+if [ ! -f "$FIRM/.claude/foundation.json" ]; then
+  echo "ERROR: $FIRM is not a firm home — no record of which kit it tracks." >&2
+  echo "       (expected .claude/foundation.json — run bin/init there first.)" >&2
+  exit 1
+fi
+if ! git -C "$KIT_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  echo "ERROR: bin/sync-report must run from inside a kit clone (a git repo)." >&2
+  exit 1
+fi
+
+# ─── Reconcile + report ────────────────────────────────────────────────────
+python3 - "$KIT_DIR" "$FIRM" "$MANIFEST" <<'PYEOF'
+import json, os, subprocess, sys
+
+kit_dir, firm_dir, manifest_path = sys.argv[1], sys.argv[2], sys.argv[3]
+DEVNULL = subprocess.DEVNULL
+
+
+def fail(msg):
+    print("ERROR: %s" % msg)
+    sys.exit(1)
+
+
+# ─ foundation.json: which kit, and the commit the firm last loaded ─
+try:
+    foundation = json.load(open(os.path.join(firm_dir, ".claude", "foundation.json")))
+except (OSError, ValueError) as exc:
+    fail("could not read the firm's kit record (.claude/foundation.json): %s" % exc)
+
+pinned = (foundation.get("pinned_sha") or "").strip()
+kitmeta = foundation.get("kit", {})
+kit_repo = kitmeta.get("repo", "(unknown)")
+kit_branch = kitmeta.get("branch", "(unknown)")
+last_synced = foundation.get("last_synced", "(unknown)")
+unpinned = (not pinned) or pinned == "unpinned"
+
+# ─ this clone's current version ─
+try:
+    head = subprocess.check_output(
+        ["git", "-C", kit_dir, "rev-parse", "HEAD"], text=True).strip()
+except subprocess.CalledProcessError:
+    fail("could not read the kit's current version.")
+
+# ─ the pinned commit must be reachable in this clone ─
+if not unpinned:
+    rc = subprocess.call(
+        ["git", "-C", kit_dir, "cat-file", "-e", pinned + "^{commit}"],
+        stdout=DEVNULL, stderr=DEVNULL)
+    if rc != 0:
+        fail("this kit copy does not reach back to the version the firm last "
+             "loaded (%s) — fetch the kit's full history and retry." % pinned[:12])
+
+# ─ MANIFEST: the kit-managed files (kit.files, minus opt-in) ─
+try:
+    manifest = json.load(open(manifest_path))
+except (OSError, ValueError) as exc:
+    fail("could not read MANIFEST.json: %s" % exc)
+
+entries = [(e["policy"], e["from"], e["to"])
+           for e in manifest.get("kit", {}).get("files", [])
+           if e["policy"] in ("directory-mirror", "file-replace")]
+
+
+# ─ content fetchers (all return bytes, or None if absent) ─
+def now_bytes(rel):
+    p = os.path.join(kit_dir, rel)
+    return open(p, "rb").read() if os.path.isfile(p) else None
+
+
+def base_bytes(rel):
+    if unpinned:
+        return None
+    try:
+        return subprocess.check_output(
+            ["git", "-C", kit_dir, "show", "%s:%s" % (pinned, rel)],
+            stderr=DEVNULL)
+    except subprocess.CalledProcessError:
+        return None
+
+
+def firm_bytes(rel):
+    p = os.path.join(firm_dir, rel)
+    return open(p, "rb").read() if os.path.isfile(p) else None
+
+
+# ─ file enumerators ─
+def ls_now(from_rel):
+    out = subprocess.check_output(
+        ["git", "-C", kit_dir, "ls-files", "-z", "--", from_rel.rstrip("/")],
+        text=True)
+    return [p for p in out.split("\0") if p]
+
+
+def ls_base(from_rel):
+    if unpinned:
+        return []
+    try:
+        out = subprocess.check_output(
+            ["git", "-C", kit_dir, "ls-tree", "-r", "-z", "--name-only",
+             pinned, "--", from_rel.rstrip("/")], text=True)
+        return [p for p in out.split("\0") if p]
+    except subprocess.CalledProcessError:
+        return []
+
+
+SKIP = (".gitkeep", ".DS_Store")
+
+
+def to_path(policy, from_rel, to_rel, file_rel):
+    """Map a kit-side file path to the firm-side path it installs to."""
+    if policy == "file-replace":
+        return to_rel
+    fr, tr = from_rel.rstrip("/"), to_rel.rstrip("/")
+    return tr + "/" + file_rel[len(fr):].lstrip("/")
+
+
+# ─ classify every managed file ─
+order = ["UPDATE", "NEW", "REMOVE", "OVERRIDE", "CONFLICT", "MISSING", "GONE-EDITED"]
+results = {s: [] for s in order}
+seen = set()
+
+for policy, from_rel, to_rel in entries:
+    if policy == "file-replace":
+        files = [from_rel]
+    else:
+        files = sorted(set(ls_now(from_rel)) | set(ls_base(from_rel)))
+    for fr in files:
+        if os.path.basename(fr) in SKIP or fr in seen:
+            continue
+        seen.add(fr)
+        tr = to_path(policy, from_rel, to_rel, fr)
+        b, k, f = base_bytes(fr), now_bytes(fr), firm_bytes(tr)
+
+        if k is None:
+            # kit no longer has this file
+            if b is not None and f is not None:
+                results["REMOVE" if f == b else "GONE-EDITED"].append((tr, fr))
+            continue
+        if f is None:
+            # firm has no copy
+            results["NEW" if b is None else "MISSING"].append((tr, fr))
+            continue
+        if b is None:
+            # no base to compare against (new since the pin, or unpinned)
+            if f != k:
+                results["CONFLICT"].append((tr, fr))
+            continue
+        if b == k:
+            # kit unchanged since the pin
+            if f != b:
+                results["OVERRIDE"].append((tr, fr))
+        else:
+            # kit changed since the pin
+            if f == b:
+                results["UPDATE"].append((tr, fr))
+            elif f != k:
+                results["CONFLICT"].append((tr, fr))
+        # f == b == k (untouched) or f == k (firm already converged): silent
+
+# ─ report ─
+HEADERS = {
+    "UPDATE":      "Kit improvements ready to load (firm copy untouched)",
+    "NEW":         "New in the kit (firm has no copy yet)",
+    "REMOVE":      "Dropped by the kit (firm copy untouched — safe to remove)",
+    "OVERRIDE":    "Firm customizations (kit unchanged here — keep firm's copy)",
+    "CONFLICT":    "Disagreements (kit AND firm both changed it — needs a decision)",
+    "MISSING":     "Gone from the firm (kit still has it — needs a decision)",
+    "GONE-EDITED": "Dropped by the kit, but the firm had edited it (needs a decision)",
+}
+needs_decision = ("CONFLICT", "MISSING", "GONE-EDITED")
+
+print("claude-legal-kit sync-report")
+print("  firm home:  %s" % firm_dir)
+print("  kit:        %s (branch: %s)" % (kit_repo, kit_branch))
+if unpinned:
+    print("  pinned at:  (unpinned — no base to compare against; files that")
+    print("              differ from the kit are reported as disagreements)")
+else:
+    print("  pinned at:  %s  (last loaded %s)" % (pinned[:12], last_synced))
+print("  kit now at: %s" % head[:12])
+print()
+print("KIT-CLONE\t%s" % kit_dir)
+print("PINNED-SHA\t%s" % (pinned if not unpinned else "unpinned"))
+print("HEAD-SHA\t%s" % head)
+
+total = sum(len(results[s]) for s in order)
+if total == 0:
+    print()
+    print("This firm is already on the latest kit. Nothing to load.")
+    print("PIN-CAN-ADVANCE\tyes")
+    print("SUMMARY\t0")
+    sys.exit(0)
+
+for s in order:
+    if not results[s]:
+        continue
+    print()
+    print("-> %s" % HEADERS[s])
+    for firm_path, kit_path in sorted(results[s]):
+        print("%s\t%s\t%s" % (s, firm_path, kit_path))
+
+pending = sum(len(results[s]) for s in needs_decision)
+print()
+print("Summary: " + ", ".join(
+    "%d %s" % (len(results[s]), s.lower()) for s in order if results[s]) + ".")
+print("PIN-CAN-ADVANCE\t%s" % ("no" if pending else "yes"))
+print("SUMMARY\t%d" % total)
+sys.exit(0)
+PYEOF

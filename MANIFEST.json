@@ -42,6 +42,12 @@
         "to": "drives/README.md",
         "policy": "file-replace",
         "note": "The drive-registry guide. Individual drive files (one per storage location) are firm-specific and not kit-tracked."
+      },
+      {
+        "from": "kit/.claude/skills/sync/",
+        "to": ".claude/skills/sync/",
+        "policy": "directory-mirror",
+        "note": "The /sync skill — the firm-level command behind 'load the latest kit updates'. Reconciles every kit-managed file against the firm's copy three ways and proposes changes one by one. Kit-managed, so the skill itself stays current. Its reconciliation engine, bin/sync-report, ships only in the kit repo and runs from a fresh fetch — it is never installed into the firm home."
       }
     ]
   },
