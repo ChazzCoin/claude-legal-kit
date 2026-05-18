@@ -35,4 +35,4 @@ All deadlines for this matter. Calendar each one in any external docket system i
 
 ## Rules to remember
 
-For Alabama state court, deadline calculation defers to Ala. R. Civ. P. 6. For federal court (N.D. Ala.), Fed. R. Civ. P. 6. See `firm/practice-kit/shared-library/rules/deadlines.md` for the general framework and `firm/practice-kit/shared-library/jurisdictions/{{JURISDICTION}}/` for jurisdiction-specific quirks.
+Deadline calculation follows this matter's jurisdiction. See `firm/practice-kit/shared-library/rules/deadlines.md` for the firm-wide method, and `firm/practice-kit/shared-library/jurisdictions/{{JURISDICTION}}/deadlines.md` for this jurisdiction's time-computation rules and numbers.

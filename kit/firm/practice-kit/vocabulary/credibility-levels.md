@@ -4,7 +4,7 @@ How authoritative a source is. Helps weight competing references. Tag format: ke
 
 ## The levels
 
-- **binding** — controlling authority for the relevant jurisdiction. Court has no discretion to disregard. Examples: SCOTUS opinion in a federal-law matter, Alabama Supreme Court opinion in an Alabama state-law matter, applicable statute or rule.
+- **binding** — controlling authority for the relevant jurisdiction. Court has no discretion to disregard. Examples: a SCOTUS opinion in a federal-law matter, the state supreme court's opinion in a matter under that state's law, an applicable statute or rule.
 
 - **persuasive-high** — non-binding authority that a court will give significant weight. Examples: out-of-circuit federal opinion in a federal question case, sister-state opinion on a question of unsettled state law, Restatement of Torts, well-regarded treatise (Wright & Miller, Prosser).
 
@@ -20,7 +20,7 @@ How authoritative a source is. Helps weight competing references. Tag format: ke
 
 ## Why we track this
 
-So when we pull every reference tagged `damages` + `alabama`, we can sort by credibility and put the binding authority on top — not have a podcast episode and a Supreme Court opinion appear as equals.
+So when we pull every reference tagged `damages` + a jurisdiction, we can sort by credibility and put the binding authority on top — not have a podcast episode and a Supreme Court opinion appear as equals.
 
 ## What Claude does automatically
 

@@ -67,7 +67,7 @@ The research handles (`@reference:`, `@source:`) wrap the research library's exi
 
 An `id` is **stable**: assigned once, never reused, not renamed casually — a rename breaks every inbound handle.
 
-- **Slug ids** — kebab-case, lowercase, hyphenated: `smith-john`, `jefferson-circuit`, `privilege`. Used for members, matters, registry stamps, and rules. Usually the file or folder name; a matter carries a slug `id` in its frontmatter that may differ from its human-readable folder name.
+- **Slug ids** — kebab-case, lowercase, hyphenated: `smith-john`, `acme-plumbing`, `privilege`. Used for members, matters, registry stamps, and rules. Usually the file or folder name; a matter carries a slug `id` in its frontmatter that may differ from its human-readable folder name.
 - **Sequential ids** — `REF-NNNN`, `SRC-NNNN`, zero-padded, per `research-library/DATA-MODEL.md`. Used for research records.
 
 ## Tags — controlled, from the vocabulary
