@@ -2,6 +2,12 @@
 
 All notable changes to the kit. Newest first.
 
+## Unreleased
+
+### Added
+
+- **`docs/ARCHITECTURE.md` §10 — the document management layer.** Design for a firm-wide file index: a metadata-only SQLite catalog (`index.db`) on the drive plane that identifies documents by content hash, tracks every instance across drives, and makes reorganizing a firm's scattered files safe. Cross-platform by design (Python, macOS and Windows equally); drives keyed by a stable volume identifier rather than a mount path. v1 is a *management* layer — inventory, deduplication, safe reorganization, matter-linking, collections — with full-text search, OCR, and content-based classification scoped as deferred tiers. Tracked as Phase 4 in the implementation status.
+
 ## v0.2.0 — 2026-05-18
 
 Phase 1 — roles, identity, conduct, and the metadata model. The kit gains a role-aware behavioral model, a deterministic identity layer, and a linking-and-tagging convention. Design of record: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
