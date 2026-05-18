@@ -60,6 +60,18 @@
         "to": ".claude/settings.json",
         "policy": "file-replace",
         "note": "Kit-owned Claude Code settings — registers the SessionStart identity hook. A firm's own settings belong in .claude/settings.local.json (gitignored, machine-local), never here, so /sync can keep this current."
+      },
+      {
+        "from": "kit/.claude/tools/",
+        "to": ".claude/tools/",
+        "policy": "directory-mirror",
+        "note": "The document index machinery (Phase 4) — schema.sql and the cross-platform Python indexer that builds index.db, the firm's file catalog. The firm's actual index.db is created at runtime, lives on the drive plane, and is gitignored — it is firm data and is not kit-tracked."
+      },
+      {
+        "from": "kit/drives/_drive-template.md",
+        "to": "drives/_drive-template.md",
+        "policy": "file-replace",
+        "note": "The per-drive registry-file template. Copied to drives/<drive>.md for each storage location; carries the stable volume_id the document index keys on. Individual drive files are firm-specific and not kit-tracked."
       }
     ]
   },
