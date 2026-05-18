@@ -75,4 +75,4 @@ claude-legal-kit/
 
 ## Status
 
-**v0.2.0 — roles, identity, and the metadata model.** The install and sync machinery, the `/sync` skill, a role-aware conduct model, a deterministic identity layer (a SessionStart hook plus a per-firm user directory), and the linking-and-tagging convention are all in place. Still ahead: a decontamination pass to strip the last origin-firm and jurisdiction-specific detail, and the first real firm deployment. See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full design and [`CHANGELOG.md`](CHANGELOG.md) for history and what's next.
+**v0.3.0 — firm-agnostic.** The install and sync machinery, the `/sync` skill, role-aware conduct, the identity layer, and the linking-and-tagging convention are in place — and the kit is now genuinely firm-agnostic: it names no firm and asserts no jurisdiction's law as universal, with jurisdiction-specific law in swappable modules under `jurisdictions/`. Still ahead: the first real firm deployment. See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full design and [`CHANGELOG.md`](CHANGELOG.md) for history.

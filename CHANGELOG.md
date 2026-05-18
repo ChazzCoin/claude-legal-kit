@@ -2,6 +2,25 @@
 
 All notable changes to the kit. Newest first.
 
+## v0.3.0 — 2026-05-18
+
+Phase 2 — decontamination. The kit was extracted from a working firm and still carried that firm's identity, and its state's law as if it were universal. Both are gone: the kit is now genuinely firm-agnostic, and jurisdiction-specific law lives in swappable modules.
+
+### Changed
+
+- **Firm identity scrubbed.** The origin firm's name, its partners' and staff's names, its prior firms, its `SR-` Bates prefix, and its drives are gone from `conflicts.md`, `privilege.md`, `retention.md`, `bates-numbering.md`, `rules/README.md`, `drives/README.md`, and the CHANGELOG. The rules keep their substance; identity became role-generic language — "a partner", "non-lawyer staff", "the firm".
+- **Core rules made jurisdiction-neutral.** `rules/deadlines.md` is now a framework — the method and discipline of deadline management, with no specific numbers. `conflicts.md`, `privilege.md`, and `retention.md` had their state-specific citations neutralized in place: uniform Rule numbering kept, state-specific figures deferred to the jurisdiction modules.
+- **Remaining references neutralized** — `vocabulary/jurisdictions.md` (Alabama reframed as a labeled sample), the `integrations/` READMEs, the `/intake` skill, `vocabulary/topics.md` and `credibility-levels.md`, `DEADLINES.md.template`, and `HOW-TO-CITE.md`.
+
+### Added
+
+- **`shared-library/jurisdictions/federal/`** — the federal jurisdiction module: FRCP 6 time computation and the common federal procedural deadlines.
+- **`shared-library/jurisdictions/alabama-state/`** — the Alabama jurisdiction module: Alabama time computation, the statute-of-limitations table, pre-suit notice, and procedural deadlines. The kit's worked example — a firm in another state copies its shape and replaces the content. `jurisdictions/README.md` rewritten to explain the neutral-core / per-jurisdiction-module model.
+
+### Next
+
+- Phase 3 — the first real firm deployment.
+
 ## v0.2.0 — 2026-05-18
 
 Phase 1 — roles, identity, conduct, and the metadata model. The kit gains a role-aware behavioral model, a deterministic identity layer, and a linking-and-tagging convention. Design of record: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
