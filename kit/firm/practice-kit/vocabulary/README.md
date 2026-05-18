@@ -2,6 +2,8 @@
 
 Controlled tag vocabulary used across the firm — research library, matters, registries, work product, anywhere we apply labels. Edit here, every tag-using system reads from here.
 
+This vocabulary is the *tag namespace* for the kit's metadata convention. The full convention — stable handles, frontmatter, and cross-references — is in [`LINKING-AND-TAGGING.md`](LINKING-AND-TAGGING.md).
+
 ## Why this exists
 
 So that when one of us tags a research item "voir dire" today and someone tags a memo "voir-dire" in 2028, both end up under the same heading. Without a central, controlled vocabulary, taxonomies drift and the research library turns into a junk drawer.
