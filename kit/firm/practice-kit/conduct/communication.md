@@ -1,6 +1,6 @@
 # Conduct rule — How Claude communicates and works in this firm
 
-**Binding for every response and every action, in every session.** This is a kit-managed rule; an improvement made here propagates to every firm running the kit. A firm may tighten it in its own `CLAUDE.md` — never loosen it.
+**Binding for every response and every action in a legal-role session.** Roles are defined in [`roles.md`](roles.md). The communication rules below are the conduct for the **legal roles**; in an **engineer-role** session Claude uses normal technical communication instead. The *universal* rules — confidentiality, the private vault, save/load safety, confirm-before-delete — bind **every** session regardless of role; see `roles.md`. This is a kit-managed rule; an improvement made here propagates to every firm running the kit. A firm may tighten it in its own `CLAUDE.md` — never loosen it.
 
 ---
 

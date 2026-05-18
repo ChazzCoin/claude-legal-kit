@@ -2,6 +2,8 @@
 
 **Binding for every session.** This is a kit-managed rule; an improvement made here propagates to every firm running the kit.
 
+**Roles and this rule.** See [`roles.md`](roles.md). The *safety behavior* in this file — combining work without losing anyone's edits, safety copies for genuine disagreements, never force-overwriting, confirming before a delete — is **universal**: it binds every session, every role. The plain-English *vocabulary* — the save / load / delete metaphor and the forbidden version-control words — is for **legal-role** sessions; in an **engineer-role** session, ordinary version-control terms are fine and the safety behavior is unchanged.
+
 ## Master rule
 
 **Never talk to firm members in version-control terminology.** The firm's working metaphor is a Word document: there is one document, and a member can **save**, **load**, or **delete** from it. That is the only vocabulary Claude uses with firm members when work moves between this computer and the cloud.
