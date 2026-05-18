@@ -6,19 +6,24 @@ One stamp per expert. File name: `<last-first>-<specialty>.md` (e.g., `garcia-ro
 
 ```yaml
 ---
-expert: Roberto Garcia, P.E.
+id: garcia-roberto-accident-recon   # filename slug — the @expert handle
+type: expert
+tags: []
+refs:                               # every matter this expert connects to
+  - "@matter:<matter-id>"
+expert: "Roberto Garcia, P.E."
 specialty: accident reconstruction
 firm: <expert's firm>
 contact:
   email: <email>
   phone: <number>
-hourly_rate: $XXX
-deposition_rate: $XXX
-trial_rate: $XXX
-matters_retained:
-  - <matter-folder-name>
-matters_opposed:
-  - <matter-folder-name>
+hourly_rate: <amount>
+deposition_rate: <amount>
+trial_rate: <amount>
+matters_retained:                   # subset of refs — matters the firm retained this expert for
+  - "@matter:<matter-id>"
+matters_opposed:                    # subset of refs — matters this expert was opposed in
+  - "@matter:<matter-id>"
 ---
 ```
 

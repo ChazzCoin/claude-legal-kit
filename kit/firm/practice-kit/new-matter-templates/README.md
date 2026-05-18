@@ -19,6 +19,10 @@ One-time files copied into a new matter when `scripts/new-matter.sh` runs. After
 
 Templates use `{{PLACEHOLDER}}` markers. `scripts/new-matter.sh` walks through them interactively at intake — never silently — and asks for values. Unfilled placeholders are an intake-incomplete signal.
 
+## Frontmatter
+
+When a template is authored or revised, it carries `id` / `type` / `tags` / `refs` frontmatter per [`../vocabulary/LINKING-AND-TAGGING.md`](../vocabulary/LINKING-AND-TAGGING.md), so an instantiated matter's files are born tagged. The matter-document `type` values are settled alongside the `/intake` skill build-out.
+
 ## Status
 
-Skeleton only. Templates to be drafted as part of the `/intake` skill build-out.
+The templates carry their structure and `{{PLACEHOLDER}}` markers. The `/intake` skill build-out wires them into an interactive new-matter flow.

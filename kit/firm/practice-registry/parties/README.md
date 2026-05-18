@@ -6,12 +6,15 @@ One stamp per party. File name: `<last-first>.md` for individuals (e.g., `smith-
 
 ```yaml
 ---
-name: Smith, John
-type: individual          # individual | entity
-role: plaintiff           # plaintiff | defendant | witness | third-party | client
-matters:
-  - <matter-folder-name>
-conflict_status: clear    # clear | flagged | declined
+id: smith-john                 # filename slug — the @party handle
+type: party
+tags: []                       # controlled tags from vocabulary/, if any apply
+refs:                          # matters this party connects to
+  - "@matter:<matter-id>"
+name: "Smith, John"
+kind: individual               # individual | entity
+role: plaintiff                # plaintiff | defendant | witness | third-party | client
+conflict_status: clear         # clear | flagged | declined
 ---
 ```
 

@@ -1,3 +1,8 @@
+---
+id: {{MEMBER_KEY}}
+type: member
+---
+
 # CLAUDE.md — {{MEMBER_NAME}}'s workspace
 
 {{MEMBER_NAME}}'s preferences and current focus. Firm-visible, like everything in the project.

@@ -1,22 +1,25 @@
 # courts/
 
-One stamp per court (or per division within a court). File name: `<state>-<county>-<level>.md` (e.g., `al-jefferson-circuit.md`, `al-madison-district.md`, `al-northern-federal.md`).
+One stamp per court (or per division within a court). File name: `<state>-<county>-<level>.md` — e.g. `<state>-<county>-circuit.md`, `<state>-<county>-district.md`.
 
 ## Stamp format
 
 ```yaml
 ---
-court: Jefferson County Circuit Court (Civil Division)
-jurisdiction: alabama-state
+id: <state>-<county>-circuit   # filename slug — the @court handle
+type: court
+tags: []
+refs:                          # matters filed in this court
+  - "@matter:<matter-id>"
+court: "<Full court name>"
+jurisdiction: <jurisdiction tag from vocabulary/jurisdictions.md>
 clerk:
   name: <name>
   phone: <number>
   email: <email>
-efile_portal: AlaFile
-filing_fee_civil: $XXX
+efile_portal: <e-file portal name, if any>
+filing_fee_civil: <amount>
 local_rules: <path or URL>
-matters:
-  - <matter-folder-name>
 ---
 ```
 

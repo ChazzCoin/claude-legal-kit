@@ -6,13 +6,16 @@ One stamp per opposing firm — or per individual attorney where the attorney is
 
 ```yaml
 ---
-firm: Smith & Associates, LLC
-attorney: Jane Doe
+id: smith-associates           # filename slug — the @counsel handle
+type: counsel
+tags: []
+refs:                          # matters this counsel connects to
+  - "@matter:<matter-id>"
+firm: "Smith & Associates, LLC"
+attorney: "Jane Doe"
 contact:
   email: jdoe@smithassoc.com
-  phone: 256-555-1234
-matters:
-  - <matter-folder-name>
+  phone: 555-0100
 style_summary: aggressive on discovery; settles late
 ---
 ```

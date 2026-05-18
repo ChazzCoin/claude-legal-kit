@@ -6,12 +6,15 @@ One stamp per judge. File name: `<last-first>.md` (e.g., `johnson-mary.md`).
 
 ```yaml
 ---
-judge: Hon. Mary Johnson
-court: <relative path to courts/ stamp, e.g., ../courts/al-jefferson-circuit.md>
+id: johnson-mary               # filename slug — the @judge handle
+type: judge
+tags: []
+refs:                          # the court this judge sits in, and matters
+  - "@court:<court-id>"
+  - "@matter:<matter-id>"
+judge: "Hon. Mary Johnson"
 scheduling_pref: morning hearings; firm trial dates
 motion_practice: prefers oral argument on summary judgment; written submissions for routine motions
-matters:
-  - <matter-folder-name>
 ---
 ```
 
