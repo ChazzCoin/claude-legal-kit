@@ -2,6 +2,36 @@
 
 All notable changes to the kit. Newest first.
 
+## v0.4.0 — 2026-05-18
+
+Cross-platform support and secure new-member onboarding — merged from a parallel branch (PR #1).
+
+### Added — cross-platform scripts
+
+The kit now serves firms on **Windows** alongside macOS/Linux. Scripts ship in two flavors with identical behavior — a bash `.sh`/no-extension flavor and a PowerShell `.ps1` flavor.
+
+- **`bin/init.ps1`, `bin/check-manifest.ps1`** — Windows-native ports of the two `bin/` scripts. Self-contained: they parse `MANIFEST.json` with PowerShell's `ConvertFrom-Json` and drop the `python3` dependency the bash scripts carry. `bin/init.ps1` verified to produce a byte-identical firm home.
+- **`kit/firm/practice-kit/scripts/detect-platform.sh` / `.ps1`** — detect the operating system and write `.claude/platform.json`.
+- **`kit/firm/practice-kit/scripts/{new-matter,sync-matter,new-member}.{sh,ps1}`** — paired skeleton stubs for the planned matter/member scripts.
+- **`conduct/running-scripts.md`** — a conduct rule: Claude reads `.claude/platform.json` and runs the `.ps1` flavor on Windows, the `.sh` flavor on macOS/Linux, with a self-detect fallback.
+- **`bin/README.md`** — documents the paired-script layout and per-OS requirements.
+
+The kit-owned `.claude/settings.json` SessionStart hook now runs the platform detector each session, alongside the identity hook — keeping `.claude/platform.json` correct as a firm home moves between machines.
+
+### Added — new-member onboarding
+
+A two-sided flow for connecting a new firm member's computer to a firm's **private** repo, designed so a private key is never transmitted.
+
+- **`bin/register-user.sh` / `.ps1`** — the member side. Self-contained, and lives in the public kit so a new member can run it before they have firm access. Generates an `ed25519` SSH key on the member's own machine — the private half never leaves it — and prints the public key as a one-line access code. Run again with the workspace address, it clones the private firm repo.
+- **`kit/firm/practice-kit/scripts/register-admin.sh` / `.ps1`** — the admin side. Adds a member's access code to the firm repo as a per-member deploy key via the GitHub CLI. Per-member keys: members need no GitHub account, and each is individually revocable.
+- **`kit/firm/practice-kit/shared-library/skills/register-member/SKILL.md`** — the `/register-member` skill: orchestrates onboarding for an administrator in plain English.
+
+### Changed
+
+- `bin/init` now writes `.claude/platform.json` at install.
+- `gitignore.template` ignores the machine-specific `.claude/platform.json`.
+- `conduct/README.md`, `scripts/README.md`, `skills/README.md`, `bootstrap/CLAUDE.md.template`, and `README.md` updated for the new conduct rule, the Windows install path, the paired-script convention, and the onboarding flow.
+
 ## v0.3.0 — 2026-05-18
 
 Phase 2 — decontamination. The kit was extracted from a working firm and still carried that firm's identity, and its state's law as if it were universal. Both are gone: the kit is now genuinely firm-agnostic, and jurisdiction-specific law lives in swappable modules.

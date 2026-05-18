@@ -55,7 +55,8 @@ Slash-commands Claude can run inside any matter. Each skill lives in its own sub
 - `new-skill/` — scaffold a new skill following the kit's canonical structure
 - `promote-to-kit/` — package a matter-developed pattern as a PR-equivalent back into the kit
 - `add-to-registry/` — write a new parties / opposing-counsel / courts / judges / experts stamp
+- `register-member/` — *implemented* — bring a new firm member's computer online: guide them to create their access key, approve it onto the private firm workspace, and confirm they can connect. Member side: `bin/register-user`; admin side: `firm/practice-kit/scripts/register-admin`. See `register-member/SKILL.md`.
 
 ## Status
 
-One implemented so far: `email-workspace/`. The rest get picked up one at a time.
+Two implemented so far: `email-workspace/` and `register-member/`. The rest get picked up one at a time.

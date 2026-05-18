@@ -21,6 +21,9 @@ firm/closed-matters/
 # Per-machine identity marker — which user is on this computer
 .claude/current-user
 
+# Detected operating system — re-stamped every session, differs per machine
+.claude/platform.json
+
 # macOS metadata
 .DS_Store
 .AppleDouble

@@ -181,6 +181,19 @@ while IFS=$'\t' read -r rtype dir; do
   fi
 done < <(manifest_records)
 
+# ─── 4. Record the platform for Claude ─────────────────────────────────────
+# Write .claude/platform.json so Claude knows to run the .sh scripts here.
+# The SessionStart hook refreshes this every session; this is the first stamp.
+DETECT="$TARGET/firm/practice-kit/scripts/detect-platform.sh"
+if [ -f "$DETECT" ]; then
+  echo
+  if sh "$DETECT" "$TARGET" >/dev/null 2>&1; then
+    echo "→ Recorded platform in .claude/platform.json"
+  else
+    echo "    WARNING: could not write .claude/platform.json"
+  fi
+fi
+
 # ─── Done ──────────────────────────────────────────────────────────────────
 echo
 if [ "$FAILURES" -gt 0 ]; then

@@ -31,18 +31,39 @@ This README is about level 1.
 
 ## Install — bootstrap a new firm home
 
+**macOS / Linux:**
+
 ```sh
 git clone https://github.com/ChazzCoin/claude-legal-kit
 claude-legal-kit/bin/init /path/to/firm-home
 ```
 
-`bin/init` is non-destructive and idempotent. It reads `MANIFEST.json` and applies each file by its policy; it never overwrites a firm's own files; it stamps `.claude/foundation.json` with the kit commit it installed from. Running it again is safe.
+**Windows:**
+
+```powershell
+git clone https://github.com/ChazzCoin/claude-legal-kit
+claude-legal-kit\bin\init.ps1 -Target C:\path\to\firm-home
+```
+
+Every kit script is paired — a bash `.sh`/no-extension flavor and a PowerShell `.ps1` flavor with identical behavior — so the kit serves firms on either operating system. Run the one for your machine; see [`bin/README.md`](bin/README.md). The PowerShell ports need only `git`; the bash scripts also use `python3`.
+
+`bin/init` is non-destructive and idempotent. It reads `MANIFEST.json` and applies each file by its policy; it never overwrites a firm's own files; it stamps `.claude/foundation.json` with the kit commit it installed from. It also installs `.claude/settings.json`, whose `SessionStart` hook records the operating system in `.claude/platform.json` each session — that is how Claude knows which script flavor to run inside the firm (the binding rule is `conduct/running-scripts.md`). Running `init` again is safe.
 
 After install: fill the `{{PLACEHOLDERS}}` in `CLAUDE.md` and `firm/FIRM.md`, add a file under `drives/` per storage location, copy `members/_template/` once per firm member, and run `.claude/hooks/setup-user.sh` on each person's machine so the identity hook can resolve them.
 
 ## Sync — pull later kit updates
 
 From inside the firm home, run the `/sync` skill — or just ask Claude to **"load the latest kit updates."** It is a **one-way** sync, kit → firm: it fetches the kit, diffs every kit-managed file against the firm's copy, classifies drift (kit-only change / firm override / both changed / new / removed), and proposes changes file-by-file. It never auto-applies, never touches the firm's own files, and never silently overwrites a firm override. The pin in `foundation.json` advances on success.
+
+## Onboard a new firm member
+
+A firm home is usually a **private** git repository — a new member's computer can't clone it until it has been granted access. The kit handles this with a two-sided flow that never moves a private key:
+
+1. **Member side** — the new member runs [`bin/register-user`](bin/README.md) (`.sh` on macOS/Linux, `.ps1` on Windows) on their own computer. It lives in *this* public kit, so they can get it before they have any firm access. It generates an SSH key locally — the private half never leaves their machine — and prints a one-line **access code** (the public key).
+2. **Admin side** — the member sends that access code to a firm administrator, who approves it. `firm/practice-kit/scripts/register-admin` adds it to the private firm repo as a **per-member deploy key** (so members need no GitHub account, and any one member can be removed without affecting the others). This is normally driven by the **`/register-member` skill**, which keeps the whole exchange in plain English.
+3. The member runs `register-user` once more with the workspace address and their computer clones the firm repo.
+
+Only the public access code ever travels; the private key is generated where it is used and stays there. See the [`/register-member` skill](kit/firm/practice-kit/shared-library/skills/register-member/SKILL.md) for the full flow.
 
 ## File policies
 
@@ -65,7 +86,7 @@ claude-legal-kit/
 │   ├── drives/      #   the drive-registry guide
 │   └── .claude/     #   the /sync skill + the identity hooks
 ├── bootstrap/       # one-time firm files: CLAUDE.md, FIRM.md, .gitignore, foundation.json
-├── bin/             # init, check-manifest, sync-report
+├── bin/             # init, check-manifest, sync-report — paired bash + PowerShell flavors
 ├── docs/            # ARCHITECTURE.md — the kit's design
 ├── CLAUDE.md        # orientation for working on the kit itself
 ├── MANIFEST.json    # authoritative inventory + install policies
