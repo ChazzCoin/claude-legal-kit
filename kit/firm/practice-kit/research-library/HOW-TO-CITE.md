@@ -37,7 +37,7 @@ Hickman v. Taylor, 329 U.S. 495 (1947).
 ```
 
 ```
-Smith v. Jones, 123 So. 3d 456 (Ala. 2024).
+Doe v. Roe, 123 [Regional Rptr.] 456 ([State Ct.] 2024).
 ```
 
 ### Statute or rule
@@ -46,7 +46,7 @@ Standard Bluebook.
 
 ```
 Fed. R. Civ. P. 26(b)(3).
-Ala. Code § 6-5-410 (1975).
+[State] Code § 6-5-410 (1975).
 ```
 
 ### Law review article
@@ -54,7 +54,7 @@ Ala. Code § 6-5-410 (1975).
 Standard Bluebook + URL and date accessed if web-accessed.
 
 ```
-Jane Doe, The Dignity of Damages, 67 Ala. L. Rev. 123 (2024).
+Jane Doe, The Dignity of Damages, 67 [State] L. Rev. 123 (2024).
 ```
 
 ### Trade magazine / journal article

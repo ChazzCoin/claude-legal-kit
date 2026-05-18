@@ -208,7 +208,7 @@ Before a release: run `bin/check-manifest`, and scan the tree for leaked specifi
 - The two-structure scaffold; `MANIFEST.json`; `bin/init`; `bin/check-manifest`.
 - `/sync` (kit → firm) and its engine `bin/sync-report`.
 
-**Phase 1 — role, identity, conduct, and metadata model** *(designed; not built)*
+**Phase 1 — role, identity, conduct, and metadata model** *(built — v0.2.0)*
 - `conduct/roles.md`; role-aware `conduct/communication.md` and `conduct/save-load.md`.
 - The hooks framework: `.claude/hooks/` (SessionStart hook + setup script), kit-owned `.claude/settings.json`, the `users.json` schema, the `.claude/current-user` marker, gitignore update. New `MANIFEST.json` entries for the hooks and settings.
 - Member-visibility rewrite (`members/README.md`, the member template).
@@ -216,7 +216,7 @@ Before a release: run `bin/check-manifest`, and scan the tree for leaked specifi
 - A kit-repo root `CLAUDE.md` orienting kit-development sessions.
 - README update; this document.
 
-**Phase 2 — decontamination** *(designed; not built)*
+**Phase 2 — decontamination** *(built — v0.3.0)*
 - Remove the hardcoded drive path in the member template.
 - Jurisdiction-neutralize `shared-library/rules/{conflicts,privilege,retention}.md`, `rules/README.md`, and `vocabulary/jurisdictions.md`.
 

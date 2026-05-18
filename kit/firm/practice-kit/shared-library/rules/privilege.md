@@ -8,8 +8,8 @@ Always-on rule. Applies to every document created or handled by anyone working i
 Covers **communications** between attorney and client made in confidence for the purpose of obtaining legal advice.
 
 **What's covered:**
-- Client emails, calls, in-person meetings with Bruce or Stewart
-- Client communications with Mills McWhorter when she's working as the attorneys' agent (gathering information, scheduling, conveying instructions)
+- Client emails, calls, and in-person meetings with the firm's attorneys
+- Client communications with non-lawyer staff when they are working as the attorneys' agent (gathering information, scheduling, conveying instructions)
 - Drafts of letters going out to the client
 - Notes from those communications
 
@@ -21,7 +21,7 @@ Covers **communications** between attorney and client made in confidence for the
 ### 2. Attorney work product
 Covers **the attorney's mental impressions, analysis, theories, and strategies** prepared in anticipation of litigation.
 
-Authority: Hickman v. Taylor, 329 U.S. 495 (1947); FRCP 26(b)(3); Ala. R. Civ. P. 26(b)(4).
+Authority: Hickman v. Taylor, 329 U.S. 495 (1947); FRCP 26(b)(3); and the state-court equivalent for the matter's jurisdiction (see `firm/practice-kit/shared-library/jurisdictions/<jurisdiction>/`).
 
 **What's covered:**
 - STRATEGY.md in every matter (mental impressions — *opinion* work product, near-absolute protection)
@@ -60,12 +60,12 @@ When the firm produces:
 
 If the firm inadvertently produces a privileged document:
 - **Federal:** FRE 502(b) — clawback if the disclosure was inadvertent, reasonable steps were taken to prevent disclosure, and reasonable steps are taken to rectify
-- **Alabama:** Ala. R. Civ. P. 26(b)(4) — similar standard
+- **State court:** most states have a clawback rule that parallels FRE 502(b) — confirm the standard in the matter's `jurisdictions/<jurisdiction>/` folder
 - **Practice:** Send written notice immediately demanding return; preserve a copy of the produced document; do not waive
 
-### Communications with Mills McWhorter
+### Communications through non-lawyer staff
 
-Mills is a non-lawyer case manager. Communications between Mills and the client are privileged **when Mills is acting as the attorneys' agent** — gathering information at attorney direction, scheduling, communicating instructions, organizing files. Mills is not authorized to give legal advice, and any communication where she purports to do so would not be privileged (and would expose the firm). See [members/mills-mcwhorter/CLAUDE.md](../../../../members/mills-mcwhorter/CLAUDE.md) for the scope rules.
+A non-lawyer staff member — a case manager, paralegal, or legal assistant — may communicate with the client as the attorneys' agent. Those communications are privileged **when the staff member is acting as the attorneys' agent** — gathering information at attorney direction, scheduling, communicating instructions, organizing files. Non-lawyer staff are not authorized to give legal advice; any communication where a staff member purports to do so would not be privileged (and would expose the firm). Each member's workspace profile records the scope of their role.
 
 ### Common-interest doctrine
 

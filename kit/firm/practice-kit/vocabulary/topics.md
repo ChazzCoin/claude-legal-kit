@@ -68,7 +68,7 @@ Substantive legal topics and trial-skills topics. Tag format: kebab-case.
 - **causation** — *added 2026-05-15*
 - **proximate-cause** — *added 2026-05-15*
 - **comparative-fault** — *added 2026-05-15*
-- **contributory-negligence** — Alabama-relevant — *added 2026-05-15*
+- **contributory-negligence** — the strict bar retained in a minority of jurisdictions — *added 2026-05-15*
 - **assumption-of-risk** — *added 2026-05-15*
 - **last-clear-chance** — *added 2026-05-15*
 - **respondeat-superior** — *added 2026-05-15*

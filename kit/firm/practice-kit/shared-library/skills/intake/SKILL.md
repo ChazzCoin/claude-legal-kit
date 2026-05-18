@@ -59,8 +59,8 @@ Collect:
   - Format: `<Client Last, First> (<short descriptor>)` for typical matters
   - Or: `<Plaintiff> v. <Defendant>` for adversarial caption style
 - Practice area — one of `personal-injury`, `family-law`, `criminal-defense`, `construction-law`, `civil-litigation`, or `other`
-- Jurisdiction — one of `alabama-state`, `federal-northern-alabama`, or `other`
-- Specific court name (e.g., "Jefferson County Circuit Court, Civil Division")
+- Jurisdiction — matching a folder under `shared-library/jurisdictions/` (e.g. `federal`, `alabama-state`); `other` if that jurisdiction's folder isn't set up yet
+- Specific court name (e.g., "<County> County Circuit Court, Civil Division")
 - Judge if known
 - Date engaged — default to today
 - Primary attorney (must be a folder name under `members/`; if not, propose creating it)

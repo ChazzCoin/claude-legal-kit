@@ -6,23 +6,23 @@ Always-on convention for how the firm labels documents in discovery production a
 
 **Format:** `<FIRM>-<MATTER>-<6-digit sequence>`
 
-- `<FIRM>` — the firm's 2–3 letter Bates code, chosen once and used on every production (the examples below use `SR` as a sample code)
+- `<FIRM>` — the firm's 2–3 letter Bates code, chosen once and used on every production (the examples below use `FIRM` as a stand-in)
 - `<MATTER>` — short uppercase tag for the matter (typically the client's last name; sometimes with a disambiguator)
 - `<6-digit sequence>` — continuous numbering within the matter's production
 
 ### Examples
 
-- `SR-SMITH-000001` — first page produced in the Smith matter
-- `SR-SMITH-000247` — page 247 in the Smith matter
-- `SR-LATTA-000001` — Latta Plumbing matter, first page
+- `FIRM-SMITH-000001` — first page produced in the Smith matter
+- `FIRM-SMITH-000247` — page 247 in the Smith matter
+- `FIRM-ACME-000001` — Acme Plumbing matter, first page
 
 For matters where the client has multiple cases:
-- `SR-SMITH-AUTO-000001` — Smith auto-accident matter, first page
-- `SR-SMITH-WC-000001` — Smith workers'-comp matter, first page
+- `FIRM-SMITH-AUTO-000001` — Smith auto-accident matter, first page
+- `FIRM-SMITH-WC-000001` — Smith workers'-comp matter, first page
 
 ## Continuous numbering
 
-Within a single matter, the sequence is continuous and **never restarts**. If the firm produces 500 pages and then 200 more later, the second production starts at `SR-MATTER-000501`, not `000001`.
+Within a single matter, the sequence is continuous and **never restarts**. If the firm produces 500 pages and then 200 more later, the second production starts at `FIRM-MATTER-000501`, not `000001`.
 
 If a document is later determined to be privileged and clawed back, **do not renumber**. The Bates number remains assigned; the document is just logged as "withheld via clawback" in the privilege log.
 
@@ -44,7 +44,7 @@ Every privileged document withheld from production is logged in the matter's `DI
 
 | Bates (reserved) | Date | Author | Recipient | Description | Privilege claimed |
 |---|---|---|---|---|---|
-| SR-SMITH-000248 | 2025-03-15 | A. Attorney | John Smith | Email re: settlement strategy | Attorney-client + work product |
+| FIRM-SMITH-000248 | 2025-03-15 | A. Attorney | John Smith | Email re: settlement strategy | Attorney-client + work product |
 
 The "Bates (reserved)" column shows the number that *would* have been used. This keeps the production's overall sequence continuous even when documents are withheld.
 
@@ -56,7 +56,7 @@ File: `02-Discovery/production-<date>-index.md`
 
 Contents:
 - Date of production
-- Bates range (e.g., `SR-SMITH-000001` through `SR-SMITH-000500`)
+- Bates range (e.g., `FIRM-SMITH-000001` through `FIRM-SMITH-000500`)
 - Number of pages / files
 - Categories of documents (e.g., medical records, employment file, communications)
 - Privilege withholdings (count)

@@ -14,7 +14,7 @@ When it's *not* active yet, the folder just holds a planning README — a remind
 ## Planned
 
 - **email/** — Gmail or Outlook. When connected, incoming email gets filed into the right matter's correspondence folder, and Claude can draft replies for attorney review.
-- **court-filing/** — AlaFile (Alabama state) and PACER/CM-ECF (federal). Pull docket entries, receive new court orders, prepare filing packages for attorney sign-off.
+- **court-filing/** — the state e-filing portal and PACER/CM-ECF (federal). Pull docket entries, receive new court orders, prepare filing packages for attorney sign-off.
 - **legal-research/** — Westlaw or Lexis for case law, statute citations, shepardizing.
 - **e-signature/** — DocuSign or AdobeSign for engagement letters, settlement releases, and other signature documents.
 - **calendar/** — Google or Outlook calendar. Matter deadlines auto-add to the right attorney's calendar; trial weeks block out across the firm.
