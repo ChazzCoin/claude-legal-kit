@@ -6,7 +6,14 @@ This rule is the authority on **roles**. The other conduct rules — [`communica
 
 ## Every session has one active user, with one role
 
-A firm home is used by named people, each with a role. Before any work, the session's active user is resolved — deterministically, by the identity hook that runs at session start, from the firm's user directory (`members/users.json`). The role is **resolved, never self-asserted**: a session cannot change its own role on request, and no user can take another's role by claiming it. If no user can be resolved, the session is held until identity is established.
+A firm home is used by named people, each with a role. Before any work, the session's active user is resolved — deterministically, by the identity hook that runs at session start, from the firm's user directory (`members/users.json`). If no user can be resolved, the session is hard-blocked until identity is established.
+
+**Two resolution paths, with different integrity levels:**
+
+- **Verified** — the machine holds a kit SSH key (`~/.ssh/claude-legal-kit_ed25519`). The hook computes its fingerprint and matches it against `key_fingerprints` in `users.json`. The fingerprint was placed there by an administrator running `register-admin.py` — not self-declared by the member. A member cannot gain a different role by editing a text file; the key is the identity anchor.
+- **Asserted** — no kit key is present (admin bootstrap machines and development use). The hook falls back to the per-machine marker (`.claude/current-user`), a human-typed string. The session context labels this as asserted and weaker; it is not the normal path for firm members.
+
+In both paths: the role is fixed at session start. A session cannot change its own role on request, and no user can take another user's role by claiming it.
 
 ## Two role families
 

@@ -1,12 +1,12 @@
 ---
 name: register-member
-description: Bring a new firm member's computer online — guide them to create their access key, approve it, and confirm they can reach the firm's private workspace
+description: Bring a new firm member's computer online — guide them to create their access key, approve it, record them in the user directory, and confirm they can reach the firm's private workspace
 status: authored 2026-05-18
 ---
 
 # /register-member
 
-Connects a new firm member's computer to the firm's private workspace. This skill is run by an **administrator** — someone whose computer is already set up. By the time it finishes, the new member's computer can open, read, and save the firm's files.
+Connects a new firm member's computer to the firm's private workspace. This skill is run by an **administrator** — someone whose computer is already set up. By the time it finishes, the new member's computer can open, read, and save the firm's files, and the identity hook will verify them by their SSH key at every session start.
 
 ## How the connection works (so Claude explains it correctly)
 
@@ -16,6 +16,8 @@ The firm's workspace is private — a computer can only reach it once it has bee
 - The **shareable half — the "access code"** — is safe to send by any means. The administrator registers that code with the firm's workspace, which approves that one computer.
 
 Never reverse this. If a member is ever about to send the *secret* half (a block that starts with `-----BEGIN`), **stop them** — that is not what gets shared.
+
+The access code also contains a **fingerprint** — a short string starting with `SHA256:` — which the identity hook uses to verify the member automatically at every session start. This fingerprint goes into `members/users.json` when the administrator approves.
 
 ## When to use
 
@@ -30,16 +32,24 @@ Never reverse this. If a member is ever about to send the *secret* half (a block
 
 ## What Claude needs to know first
 
-- **Which kind of computer the new member uses** — a Mac or a Windows computer. The setup helper comes in one version for each.
-- **Whether the member has already sent their access code.** This decides which half of the job is left:
-  - Not yet → Claude prepares the message to send them (Step 2).
-  - Already sent → Claude approves it (Step 3).
+- **The new member's short handle** — a short lowercase key used in `users.json` and as their folder name under `members/` (e.g. `alice`). For an existing member on a new computer, this is already set.
+- **The new member's full name** — how they appear in the directory.
+- **Their role** — one of: partner, associate, of-counsel, paralegal, legal-assistant, investigator, engineer.
+- **Which kind of computer the new member uses** — Mac or Windows.
+- **Whether the member has already sent their access code.** This decides which half of the job is left.
 
 The administrator's own computer needs the firm's cloud connection ready (the GitHub CLI, `gh`, signed in). If it isn't, Claude says so plainly and offers to walk through it before going further.
 
 ## Flow
 
-### Step 1 — Find out where the new member is
+### Step 1 — Gather member information
+
+If this is a **new member** (not an existing member with a new computer), collect:
+- Their short handle (all lowercase, no spaces — e.g. `alice`)
+- Their full display name
+- Their role from the list above
+
+If this is an **existing member on a new computer**, just confirm their handle.
 
 Ask the administrator: *"Has the new member already created and sent you their access code?"*
 
@@ -54,8 +64,8 @@ Ask which computer they use, then prepare a plain-English message the administra
 
 1. Open the kit's public page: `https://github.com/ChazzCoin/claude-legal-kit`
 2. Get the setup helper from the `bin/` folder — `register-user` (on Windows, run it with Python or use the `register-user.cmd` shim beside it). (Downloading that one file is enough; the helper is self-contained.)
-3. Run it. It will create their access key and show an **access code**.
-4. Copy the whole access code and send it back to the administrator.
+3. Run it. It will create their access key and show an **access code** and a **fingerprint** (a short `SHA256:...` string).
+4. Copy the whole access code (the full line beginning with `ssh-ed25519`) and send it back to the administrator.
 
 Then **stop**. Tell the administrator to return to this skill once the member sends the code.
 
@@ -63,10 +73,36 @@ Then **stop**. Tell the administrator to return to this skill once the member se
 
 1. **Check the firm's cloud connection.** If the GitHub CLI isn't installed or signed in, explain it plainly and help set it up before continuing.
 2. **Take the access code** the administrator received. If what they paste begins with `-----BEGIN`, that is the *secret* half — stop, explain the member should send only the short access code (one line starting with `ssh-`), and do not store what was pasted.
-3. **Confirm before approving.** Approving gives a new computer access to the firm's private files — a deliberate step. Ask the administrator for an explicit go-ahead. The permission line reads: *"Claude wants to give a new member access to the firm's workspace."*
+3. **Confirm before approving.** Approving gives a new computer access to the firm's private files — a deliberate step. Ask the administrator for an explicit go-ahead. The permission line reads: *"Claude wants to give [member name] access to the firm's workspace."*
 4. **Decide the access level.** The default is **read and save** — the member can both open the firm's files and save their own work back. Offer read-only if the administrator wants a view-only member.
-5. **Run the approval.** Use the kit's admin helper — `firm/practice-kit/scripts/register-admin.py`. It is Python; run it with `python3 register-admin.py` (or `py register-admin.py` on Windows).
-6. **Hand back the confirmation.** The helper prints a short "you're approved" message with the workspace address. Give that to the administrator to send to the member, who runs their setup helper once more — this time with the address — to finish connecting.
+5. **Run the approval.** Use the kit's admin helper — `firm/practice-kit/scripts/register-admin.py`. Pass all the member details collected in Step 1:
+
+   ```
+   python3 firm/practice-kit/scripts/register-admin.py \
+     "<access-code>" \
+     --key  alice \
+     --name "Alice Smith" \
+     --role partner
+   ```
+
+   On Windows: `py firm/practice-kit/scripts/register-admin.py ...`
+
+   For an existing member on a new computer (omit `--name`/`--role`; the existing entry is kept):
+   ```
+   python3 firm/practice-kit/scripts/register-admin.py "<access-code>" --key alice
+   ```
+
+6. **Commit `members/users.json`** to the firm repo. The script writes the new member's fingerprint into `members/users.json` — commit it so every machine picks up the updated directory:
+
+   *"Claude wants to commit the updated member directory to the firm repo."*
+
+   ```
+   git add members/users.json
+   git commit -m "Register [member name] — add SSH key fingerprint"
+   git push
+   ```
+
+7. **Hand back the confirmation.** The helper prints a short "you're approved" message with the workspace address. Give that to the administrator to send to the member, who runs their setup helper once more — this time with the address — to finish connecting.
 
 ### Step 4 — Offer to set up their workspace folder
 
@@ -75,8 +111,9 @@ Once the member is approved, offer to create their personal workspace folder und
 ## Outputs
 
 - The new member's computer is approved for the firm's private workspace.
+- `members/users.json` updated with the member's key fingerprint (committed to the firm repo).
 - Two ready-to-send plain-English messages handed to the administrator: the setup instructions, and the approval confirmation.
-- Optionally, a new `members/<name>/` workspace folder.
+- Optionally, a new `members/<handle>/` workspace folder.
 
 ## Failure modes
 
@@ -92,3 +129,4 @@ Once the member is approved, offer to create their personal workspace folder und
 - **Never approve without the administrator's explicit go-ahead.** Access to privileged client files is not granted on assumption.
 - **Don't send anything externally.** This skill prepares messages; the administrator sends them. Claude does not email the member.
 - **Don't generate a member's key on the administrator's computer and ship it to them.** A key is created on the computer that will use it — that is the whole point of the access-code design.
+- **Don't skip committing `members/users.json`.** Without the commit, the fingerprint stays only on the administrator's machine and the member's identity cannot be verified on any other.

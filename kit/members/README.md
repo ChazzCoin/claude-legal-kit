@@ -30,7 +30,11 @@ What that means in practice:
 
 ## The user directory
 
-`members/users.json` is the firm's list of users — for each, a `key`, `name`, `role`, and `status`. It is the source of truth for who works at the firm and what role each holds; the identity hook resolves the active user against it at the start of every session. It is created and maintained by the identity setup script (`.claude/hooks/setup-user.sh`).
+`members/users.json` is the firm's list of users — for each, a `key`, `name`, `role`, `status`, and `key_fingerprints` list. It is the source of truth for who works at the firm and what role each holds; the identity hook resolves the active user against it at the start of every session.
+
+The directory is built and maintained by the **`/register-member` skill**, which drives `register-admin.py`. For each approved member, `register-admin.py` writes their SSH key fingerprint into `users.json` — the identity hook uses that fingerprint to verify the member cryptographically at every session start, without prompting. The administrator commits the updated `users.json` after each approval so every machine picks up the new entry.
+
+`.claude/hooks/setup-user.py` is the bootstrap fallback: it creates marker-only entries for the administrator's own machine before the SSH key infrastructure is in place. Regular firm members go through `/register-member` instead.
 
 ## Creating a new workspace
 
@@ -38,7 +42,7 @@ What that means in practice:
 cp -R members/_template "members/<key>"
 ```
 
-Then run `.claude/hooks/setup-user.sh` so the person is in the user directory, and fill in `members/<key>/CLAUDE.md`. The `<key>` is the person's short handle — the same one used in `users.json` and as their folder name.
+Fill in `members/<key>/CLAUDE.md` with the person's name, role, and current focus. The `<key>` is the person's short handle — the same one used in `users.json` and as their folder name. The `/register-member` skill handles the directory entry and workspace folder together.
 
 A non-legal member (the engineer) uses the same template; they simply leave the legal-workflow subfolders unused, or remove the ones they do not need. One template, many uses.
 

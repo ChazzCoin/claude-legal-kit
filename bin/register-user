@@ -36,6 +36,8 @@ Cross-platform: pure Python standard library — runs the same on macOS and
 Windows. Requires python3, ssh-keygen, and git.
 """
 
+import base64
+import hashlib
 import os
 import stat
 import subprocess
@@ -77,6 +79,23 @@ def chmod_safe(path, mode):
         pass
 
 
+def compute_fingerprint(pub_file):
+    """SHA256 fingerprint from a .pub file — matches ssh-keygen -lf output.
+    Returns 'SHA256:<base64>' or None on error."""
+    try:
+        with open(pub_file, encoding="utf-8") as fh:
+            line = fh.readline().strip()
+        parts = line.split()
+        if len(parts) < 2:
+            return None
+        blob   = base64.b64decode(parts[1])
+        digest = hashlib.sha256(blob).digest()
+        b64    = base64.b64encode(digest).decode("ascii").rstrip("=")
+        return "SHA256:" + b64
+    except Exception:
+        return None
+
+
 def print_access_code():
     print()
     print("─────────────────────────────────────────────────────────────────────")
@@ -85,6 +104,9 @@ def print_access_code():
     print("─────────────────────────────────────────────────────────────────────")
     with open(PUB, encoding="utf-8") as fh:
         sys.stdout.write(fh.read())
+    fp = compute_fingerprint(PUB)
+    if fp:
+        print(" Fingerprint: %s" % fp)
     print("─────────────────────────────────────────────────────────────────────")
 
 

@@ -58,26 +58,35 @@ A firm home must know **who is working** before any work begins — to apply the
 
 ### The pieces
 
-- **`.claude/hooks/`** — the SessionStart hook (`session-start.js`) and the once-per-machine setup script (`setup-user.py`). Kit-managed, so `/sync` keeps them current. The hook is **Node.js** — Claude Code spawns it, and Node is the runtime guaranteed on every platform; the setup script is Python. No third-party packages. See §10 for the kit-wide runtime split.
+- **`.claude/hooks/`** — the SessionStart hook (`session-start.js`) and the bootstrap fallback script (`setup-user.py`). Kit-managed, so `/sync` keeps them current. The hook is **Node.js** — Claude Code spawns it, and Node is the runtime guaranteed on every platform; the setup script is Python. No third-party packages. See §10 for the kit-wide runtime split.
 - **`.claude/settings.json`** — registers the hooks. **Kit-owned**: it ships with the kit and `/sync` keeps it current. A firm's own settings go in `.claude/settings.local.json` (gitignored, never synced, firm- and machine-local).
-- **`members/users.json`** — the **user directory** (the firm's "AD"): every user, their role, their member folder, their status. Firm data — it lives in the firm home, travels the git plane, is firm-visible. The kit ships only the *schema*; the real file is built by the setup script as people are onboarded. It is deliberately a small subset of a future permissions model, shaped so it can grow.
-- **`.claude/current-user`** — a per-machine pointer, gitignored: which user in `users.json` is on this machine. Just a pointer; the directory holds the detail.
+- **`members/users.json`** — the **user directory**: every user, their `key`, `name`, `role`, `status`, and `key_fingerprints` list. Firm data — it lives in the firm home, travels the git plane, is firm-visible. The fingerprints are written by `register-admin.py` at member approval time; the hook reads them to verify identity.
+- **`.claude/current-user`** — a per-machine pointer, gitignored: which user in `users.json` is on this machine. Used only on the ASSERTED fallback path when no kit SSH key is present.
 
 ### The flow
 
-**SessionStart hook** — fires deterministically at the start of every session. It reads `.claude/current-user`, looks the user up in `members/users.json`, and:
+**SessionStart hook** — fires deterministically at the start of every session. It resolves identity in two ordered steps:
 
-- **Known user** → injects identity, role, conduct mode, and setup pointers into the session. Claude starts already oriented to that person.
-- **Unknown user** → **hard-blocks the session** (`continue: false`) with a message pointing to the setup script. No identity, no session. This is the lock.
+1. **VERIFIED path** — reads `~/.ssh/claude-legal-kit_ed25519.pub`, computes its SHA256 fingerprint in-process (Node `crypto`, no shell calls), and searches `users.json` for a matching `key_fingerprints` entry. The fingerprint was placed in `users.json` by an administrator — not self-declared by the member. Zero matches or multiple matches → hard-block. Exactly one match → resolved, labeled VERIFIED.
 
-**Setup script** (`.claude/hooks/setup-user.py`) — a normal interactive script a person runs once in their terminal. A regular script *can* prompt; only hooks cannot. It asks who they are and their role, appends them to `users.json` (creating it if absent), and writes the per-machine `current-user` pointer. Normally this is done at machine onboarding; the hook's hard-block is the fail-safe for when it has not been.
+2. **ASSERTED fallback** — if no kit key exists on this machine (admin bootstrap and development use), the hook reads `.claude/current-user` and looks the marker up in `users.json`. Resolved if found, labeled ASSERTED in the session context.
 
-The AI is never in the identity loop. The hook resolves; the setup script asks; the AI only ever *receives* a resolved identity.
+In both paths, the hook checks `status == "active"` and hard-blocks if not. Then it injects identity, role, conduct mode, and setup pointers into the session — Claude starts already oriented.
+
+**Unknown user or unresolvable identity** → **hard-blocks the session** (`continue: false`). No identity, no session.
+
+**`register-admin.py`** (administrator side of onboarding) — adds the member's SSH public key to the firm repo as a GitHub deploy key, computes the fingerprint, writes it into `members/users.json`, and prints a commit reminder. The administrator commits `users.json` to the firm repo so every machine picks up the new entry. Driven by the `/register-member` skill.
+
+**`setup-user.py`** — the bootstrap / asserted-path fallback. Creates marker-only directory entries (no `key_fingerprints`) for machines without a registered kit key. Not the normal path for firm members; those go through `/register-member`.
+
+The AI is never in the identity loop. The hook resolves; the scripts register; the AI only ever *receives* a resolved identity.
 
 ### Notes
 
 - **First-clone trust prompt.** The first time anyone opens a firm home, Claude Code asks them to trust the project's hooks before they run. Expected and one-time.
-- **The lock.** A resolved identity holds for the session. The engineer role is resolved from the machine, never self-asserted — a member cannot talk Claude into engineer mode.
+- **The lock.** A resolved identity holds for the session. Role and identity are fixed at session start and do not change on request — a member cannot talk Claude into a different role.
+- **Admin-as-authority.** Every member↦key binding is created by the administrator running `register-admin.py`. A member cannot self-register their fingerprint; they can only provide the public half (the access code) for the administrator to approve.
+- **Two-tier revocation.** Removing a GitHub deploy key cuts repo access; setting `status: "inactive"` in `users.json` (and committing) cuts session access for machines that still hold a key.
 - Hardening the lock per-turn (a `UserPromptSubmit` re-check) is possible but not in the initial design.
 
 ## 6. Role-aware conduct
