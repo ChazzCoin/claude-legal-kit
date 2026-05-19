@@ -1,0 +1,245 @@
+#!/usr/bin/env python3
+"""
+register-user — connect this computer to your law firm's private workspace.
+
+This script is self-contained — it needs nothing else from the kit, so a
+brand-new member can run it before they have any access to the firm's files.
+
+WHAT IT DOES
+  1. Creates a private "access key" pair on THIS computer (an SSH key).
+     The secret half is written to ~/.ssh/ and NEVER leaves this machine.
+  2. Shows you the shareable half — a one-line "access code" — to send to
+     your firm administrator. A public key is not a secret; it is safe to
+     send by email or chat.
+  3. Once your administrator approves you, connects this computer to the
+     firm workspace (a private git clone) using that key.
+
+WHAT IT DOES NOT DO
+  - It never uploads the secret key, never emails anyone, never touches any
+    firm file. Approval and connection are two separate, deliberate steps.
+
+TWO STEPS
+  Step 1 — run it with no extra input. It creates your key and prints the
+           access code. Send that code to your firm administrator.
+  Step 2 — once they tell you you're approved, run it again with the
+           workspace address they give you. It connects this computer.
+
+USAGE
+  bin/register-user                              # step 1 — create the key
+  bin/register-user <workspace-address>          # step 2 — connect
+  bin/register-user <workspace-address> <folder> # connect into <folder>
+
+The workspace address can be any form your administrator sends, e.g.
+  git@github.com:YourFirm/firm-home.git   |   YourFirm/firm-home
+
+Cross-platform: pure Python standard library — runs the same on macOS and
+Windows. Requires python3, ssh-keygen, and git.
+"""
+
+import os
+import stat
+import subprocess
+import sys
+
+# ─── Settings ───────────────────────────────────────────────────────────────
+HOME = os.path.expanduser("~")
+SSH_DIR = os.path.join(HOME, ".ssh")
+KEY = os.path.join(SSH_DIR, "claude-legal-kit_ed25519")
+PUB = KEY + ".pub"
+CONFIG = os.path.join(SSH_DIR, "config")
+HOST_ALIAS = "claude-legal-kit"
+
+
+# ─── Helpers ────────────────────────────────────────────────────────────────
+def have(tool):
+    """True if a command is found on PATH."""
+    for d in os.environ.get("PATH", "").split(os.pathsep):
+        for ext in ("", ".exe", ".cmd", ".bat"):
+            if d and os.path.isfile(os.path.join(d, tool + ext)):
+                return True
+    return False
+
+
+def need(tool, hint):
+    if not have(tool):
+        print()
+        print("This computer is missing a tool it needs: %s" % tool)
+        print(hint)
+        print()
+        sys.exit(1)
+
+
+def chmod_safe(path, mode):
+    """os.chmod that is a no-op-safe on platforms without POSIX permissions."""
+    try:
+        os.chmod(path, mode)
+    except OSError:
+        pass
+
+
+def print_access_code():
+    print()
+    print("─────────────────────────────────────────────────────────────────────")
+    print(" YOUR ACCESS CODE — send everything between the lines to your")
+    print(" firm administrator. It is safe to send by email or chat.")
+    print("─────────────────────────────────────────────────────────────────────")
+    with open(PUB, encoding="utf-8") as fh:
+        sys.stdout.write(fh.read())
+    print("─────────────────────────────────────────────────────────────────────")
+
+
+def normalize_repo(raw):
+    """Reduce any workspace address to OWNER/REPO. Returns None if unrecognized."""
+    if raw.startswith("git@github.com:"):
+        path = raw[len("git@github.com:"):]
+    elif raw.startswith("ssh://git@github.com/"):
+        path = raw[len("ssh://git@github.com/"):]
+    elif raw.startswith("https://github.com/"):
+        path = raw[len("https://github.com/"):]
+    elif raw.startswith("http://github.com/"):
+        path = raw[len("http://github.com/"):]
+    elif raw.startswith("git@%s:" % HOST_ALIAS):
+        path = raw[len("git@%s:" % HOST_ALIAS):]
+    elif "/" in raw:
+        path = raw
+    else:
+        return None
+    if path.endswith(".git"):
+        path = path[:-len(".git")]
+    path = path.rstrip("/")
+    if not path:
+        return None
+    return path
+
+
+def config_has_host():
+    """True if ~/.ssh/config already has a Host block for the firm alias."""
+    if not os.path.isfile(CONFIG):
+        return False
+    try:
+        with open(CONFIG, encoding="utf-8", errors="replace") as fh:
+            for line in fh:
+                tokens = line.strip().split()
+                if len(tokens) >= 2 and tokens[0] == "Host" \
+                        and HOST_ALIAS in tokens[1:]:
+                    return True
+    except OSError:
+        return False
+    return False
+
+
+def main():
+    # ─── Preflight ──────────────────────────────────────────────────────────
+    need("ssh-keygen", "On macOS it comes with the system. On Linux, install "
+                       "the 'openssh-client' package.")
+    need("git", "On macOS run: xcode-select --install . On Linux, install "
+                "the 'git' package.")
+
+    os.makedirs(SSH_DIR, exist_ok=True)
+    chmod_safe(SSH_DIR, stat.S_IRWXU)
+
+    # ─── Step 1 — create the access key ─────────────────────────────────────
+    if not os.path.isfile(KEY):
+        print("Setting up this computer for your firm's private workspace.")
+        print("Creating your personal access key — this stays on this computer.")
+        print()
+        try:
+            who = os.getlogin()
+        except OSError:
+            who = "member"
+        try:
+            host = os.uname().nodename
+        except AttributeError:
+            host = os.environ.get("COMPUTERNAME", "computer")
+        comment = "%s@%s claude-legal-kit" % (who or "member", host or "computer")
+        # -N "" — no passphrase (the key is protected by this computer's login /
+        # disk encryption); the firm chose the no-passphrase setup for smoothness.
+        subprocess.run(
+            ["ssh-keygen", "-t", "ed25519", "-f", KEY, "-N", "", "-C", comment],
+            stdout=subprocess.DEVNULL, check=True)
+        chmod_safe(KEY, stat.S_IRUSR | stat.S_IWUSR)
+        chmod_safe(PUB, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
+        print("Done — your access key was created.")
+    else:
+        print("This computer already has an access key for the firm workspace.")
+
+    # Make sure ~/.ssh/config routes the firm workspace through this key only,
+    # without disturbing any other keys this computer already uses.
+    if not config_has_host():
+        with open(CONFIG, "a", encoding="utf-8") as fh:
+            fh.write("\n")
+            fh.write("# claude-legal-kit — added by register-user, routes the "
+                     "firm workspace\n")
+            fh.write("Host %s\n" % HOST_ALIAS)
+            fh.write("    HostName github.com\n")
+            fh.write("    User git\n")
+            fh.write("    IdentityFile %s\n" % KEY)
+            fh.write("    IdentitiesOnly yes\n")
+            fh.write("    StrictHostKeyChecking accept-new\n")
+        chmod_safe(CONFIG, stat.S_IRUSR | stat.S_IWUSR)
+
+    # ─── Step 2 — connect, if a workspace address was given ─────────────────
+    args = sys.argv[1:]
+    if not args:
+        print_access_code()
+        print()
+        print("NEXT:")
+        print("  1. Send the access code above to your firm administrator.")
+        print("  2. When they tell you you're approved, run this again with the")
+        print("     workspace address they give you:")
+        print()
+        print("       bin/register-user <workspace-address>")
+        print()
+        sys.exit(0)
+
+    # A workspace address was provided — try to connect.
+    repo_path = normalize_repo(args[0])
+    if repo_path is None:
+        print()
+        print("That workspace address wasn't recognized: %s" % args[0])
+        print("Ask your administrator to resend it. It usually looks like:")
+        print("  git@github.com:YourFirm/firm-home.git")
+        print()
+        sys.exit(1)
+
+    dest = args[1] if len(args) > 1 else os.path.basename(repo_path)
+    clone_url = "git@%s:%s.git" % (HOST_ALIAS, repo_path)
+
+    if os.path.exists(dest):
+        print()
+        print("There is already a folder named '%s' here." % dest)
+        print("Move or rename it, or pass a different folder name as the "
+              "second word.")
+        print()
+        sys.exit(1)
+
+    print()
+    print("Connecting this computer to the firm workspace...")
+    result = subprocess.run(["git", "clone", clone_url, dest])
+    if result.returncode == 0:
+        print()
+        print("─────────────────────────────────────────────────────────────────────")
+        print(" You're connected.")
+        print("─────────────────────────────────────────────────────────────────────")
+        print(" The firm workspace is now on this computer in the folder:")
+        print("   %s" % os.path.abspath(dest))
+        print()
+        print(" Open Claude Code in that folder to begin. Claude will read the")
+        print(" firm's setup and take it from there.")
+        print()
+        sys.exit(0)
+    else:
+        print()
+        print("─────────────────────────────────────────────────────────────────────")
+        print(" Not connected yet.")
+        print("─────────────────────────────────────────────────────────────────────")
+        print(" The most common reason: your administrator hasn't approved this")
+        print(" computer's access code yet. Send them the code below and try the")
+        print(" same command again once they confirm.")
+        print_access_code()
+        print()
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

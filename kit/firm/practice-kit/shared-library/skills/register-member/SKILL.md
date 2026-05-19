@@ -53,7 +53,7 @@ The member needs to run the kit's setup helper on their own computer. The helper
 Ask which computer they use, then prepare a plain-English message the administrator can send them (Claude does not send it — the administrator does). The message should tell the member to:
 
 1. Open the kit's public page: `https://github.com/ChazzCoin/claude-legal-kit`
-2. Get the setup helper from the `bin/` folder — `register-user.sh` for a Mac, `register-user.ps1` for a Windows computer. (Downloading that one file is enough; the helper is self-contained.)
+2. Get the setup helper from the `bin/` folder — `register-user` (on Windows, run it with Python or use the `register-user.cmd` shim beside it). (Downloading that one file is enough; the helper is self-contained.)
 3. Run it. It will create their access key and show an **access code**.
 4. Copy the whole access code and send it back to the administrator.
 
@@ -65,7 +65,7 @@ Then **stop**. Tell the administrator to return to this skill once the member se
 2. **Take the access code** the administrator received. If what they paste begins with `-----BEGIN`, that is the *secret* half — stop, explain the member should send only the short access code (one line starting with `ssh-`), and do not store what was pasted.
 3. **Confirm before approving.** Approving gives a new computer access to the firm's private files — a deliberate step. Ask the administrator for an explicit go-ahead. The permission line reads: *"Claude wants to give a new member access to the firm's workspace."*
 4. **Decide the access level.** The default is **read and save** — the member can both open the firm's files and save their own work back. Offer read-only if the administrator wants a view-only member.
-5. **Run the approval.** Use the kit's admin helper — `firm/practice-kit/scripts/register-admin.sh` on macOS/Linux, `register-admin.ps1` on Windows. Pick the version that matches this computer; the rule for that is in `firm/practice-kit/conduct/running-scripts.md`.
+5. **Run the approval.** Use the kit's admin helper — `firm/practice-kit/scripts/register-admin.py`. It is Python; run it with `python3 register-admin.py` (or `py register-admin.py` on Windows).
 6. **Hand back the confirmation.** The helper prints a short "you're approved" message with the workspace address. Give that to the administrator to send to the member, who runs their setup helper once more — this time with the address — to finish connecting.
 
 ### Step 4 — Offer to set up their workspace folder

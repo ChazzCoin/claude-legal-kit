@@ -1,6 +1,6 @@
 {
   "name": "claude-legal-kit",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Portable Claude Code foundation for law firms — conduct rules, rules of practice, skills, document templates, and firm structure that install into any firm's home folder and stay current through a one-way sync.",
   "source": {
     "repo": "https://github.com/ChazzCoin/claude-legal-kit",
@@ -53,13 +53,25 @@
         "from": "kit/.claude/hooks/",
         "to": ".claude/hooks/",
         "policy": "directory-mirror",
-        "note": "The identity hooks. session-start.sh is the SessionStart hook that resolves the active user (from .claude/current-user against members/users.json) and either orients the session or halts it; setup-user.sh is the interactive script a person runs once per machine to register. Kit-managed, so /sync keeps them current."
+        "note": "The identity hooks. session-start.js is the SessionStart hook that resolves the active user (from .claude/current-user against members/users.json) and either orients the session or halts it — written in Node.js, the runtime Claude Code guarantees on every platform. setup-user.py is the interactive Python script a person runs once per machine to register. Kit-managed, so /sync keeps them current."
       },
       {
         "from": "kit/.claude/settings.json",
         "to": ".claude/settings.json",
         "policy": "file-replace",
-        "note": "Kit-owned Claude Code settings — the SessionStart hooks: the identity hook, and the cross-platform detector. A firm's own settings belong in .claude/settings.local.json (gitignored, machine-local), never here, so /sync can keep this current."
+        "note": "Kit-owned Claude Code settings — registers the SessionStart identity hook. A firm's own settings belong in .claude/settings.local.json (gitignored, machine-local), never here, so /sync can keep this current."
+      },
+      {
+        "from": "kit/.claude/tools/",
+        "to": ".claude/tools/",
+        "policy": "directory-mirror",
+        "note": "The document index machinery (Phase 4) — schema.sql and the cross-platform Python indexer that builds index.db, the firm's file catalog. The firm's actual index.db is created at runtime, lives on the drive plane, and is gitignored — it is firm data and is not kit-tracked."
+      },
+      {
+        "from": "kit/drives/_drive-template.md",
+        "to": "drives/_drive-template.md",
+        "policy": "file-replace",
+        "note": "The per-drive registry-file template. Copied to drives/<drive>.md for each storage location; carries the stable volume_id the document index keys on. Individual drive files are firm-specific and not kit-tracked."
       }
     ]
   },

@@ -2,11 +2,24 @@
 
 All notable changes to the kit. Newest first.
 
-## Unreleased
+## v0.5.0 — 2026-05-18
+
+Phase 4 — the document management layer (the Tier 0 engine), and the kit-wide move off shell scripts to a cross-platform runtime split. Design of record: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) §10.
 
 ### Added
 
-- **`docs/ARCHITECTURE.md` §10 — the document management layer.** Design for a firm-wide file index: a metadata-only SQLite catalog (`index.db`) on the drive plane that identifies documents by content hash, tracks every instance across drives, and makes reorganizing a firm's scattered files safe. Cross-platform by design (Python, macOS and Windows equally); drives keyed by a stable volume identifier rather than a mount path. v1 is a *management* layer — inventory, deduplication, safe reorganization, matter-linking, collections — with full-text search, OCR, and content-based classification scoped as deferred tiers. Tracked as Phase 4 in the implementation status.
+- **The document index engine** — `kit/.claude/tools/index/`: `schema.sql` (the `index.db` schema — documents keyed by content hash, with instance / drive / audit / collection / tag tables, and deferred-tier tables present but unpopulated) and `indexer.py`, the Tier 0 crawler. Cross-platform pure-Python standard library: incremental re-crawl, exact-duplicate detection, move and content-change detection, an append-only audit log, stable volume-id resolution, and a JSONL export of the derived layer. A firm's actual `index.db` is created at runtime, lives on the drive plane, and is gitignored — it is firm data and never enters the kit.
+- **`drives/_drive-template.md`** — a per-drive registry-file template carrying the stable `volume_id`.
+- **`bin/*.cmd`** — Windows shims so the `bin/` scripts run on Windows as well as macOS.
+- **`docs/ARCHITECTURE.md` §10** — the document-management design: a metadata-only index, content-hash identity, the drive-plane SQLite catalog, the tiered pipeline, and v1 as a management (not search) layer.
+
+### Changed
+
+- **The kit ships no shell scripts.** The executable tooling moved off bash to the runtime guaranteed where each piece runs: the SessionStart hook to **Node.js** (`session-start.js` — Claude Code spawns it, and Node is present on every platform it runs on); `bin/init`, `bin/check-manifest`, `bin/sync-report`, `bin/register-user`, the `setup-user` script, and `register-admin` to **Python**. `settings.json` invokes `node`. Behavior and machine-readable output are preserved. The kit now runs on macOS and Windows equally.
+- **This supersedes v0.4.0's cross-platform mechanism.** v0.4.0 made the kit cross-platform by shipping a paired `.sh` and `.ps1` flavor of every script. The runtime split replaces that: a single Python (or Node) implementation per script, no per-OS pairs. All `.ps1` scripts, the remaining `.sh` scripts, the `detect-platform` script, `.claude/platform.json`, and the `conduct/running-scripts.md` rule are removed — there is no longer a script flavor to detect or choose. `bin/register-user` and `firm/practice-kit/scripts/register-admin` (added in v0.4.0 as `.sh`/`.ps1` pairs) are now single Python scripts.
+- **The `drives/` registry is keyed on a stable `volume_id`** — a volume UUID / serial — not a mount path, which differs by OS and, on Windows, changes between pluggings. `mount_path` is demoted to informational.
+- **`MANIFEST.json`** — registers the index machinery (`.claude/tools/`) and the drive template.
+- **`gitignore.template`** — ignores the firm's `index.db` and JSONL exports; the kit repo's own `.gitignore` ignores Python bytecode.
 
 ## v0.4.0 — 2026-05-18
 

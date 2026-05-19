@@ -1,90 +1,53 @@
-#!/usr/bin/env bash
-#
-# claude-legal-kit sync-report — the reconciliation engine behind the
-# /sync skill ("load the latest kit updates").
-#
-# A firm home does NOT contain the kit. The /sync skill first fetches the
-# kit (a fresh, COMPLETE clone), then runs THIS script from inside that
-# clone. The script is READ-ONLY: it inspects, classifies, and prints a
-# report — it changes nothing. The skill is what applies changes, with
-# the firm's permission, file by file.
-#
-# Usage:
-#   <kit-clone>/bin/sync-report <firm-home-dir>
-#
-# It compares every kit-managed file (the kit.files[] entries in
-# MANIFEST.json, minus opt-in) three ways:
-#
-#   base   the file in the kit at the commit the firm last loaded
-#          (the firm's .claude/foundation.json -> "pinned_sha")
-#   kit    the file in the kit now (this clone)
-#   firm   the firm's installed copy
-#
-# and classifies the drift:
-#
-#   UPDATE       kit changed it, firm copy untouched      -> safe to load
-#   NEW          kit added it, firm has no copy           -> safe to load
-#   REMOVE       kit dropped it, firm copy untouched      -> safe to remove
-#   OVERRIDE     firm changed it, kit did not             -> keep firm's copy
-#   CONFLICT     BOTH changed it                          -> needs a decision
-#   MISSING      kit has it, firm copy is gone            -> needs a decision
-#   GONE-EDITED  kit dropped it, but firm had edited it   -> needs a decision
-#   (files that match all three ways are not reported)
-#
-# Bootstrap files (CLAUDE.md, FIRM.md, .gitignore, foundation.json) are
-# the firm's own — never kit-managed, never reported here.
-#
-# Output is grouped and human-readable; every data line is also
-# TAB-separated — "<TOKEN><TAB><firm-path><TAB><kit-path>" — for the skill
-# to parse, alongside KIT-CLONE / PINNED-SHA / HEAD-SHA / PIN-CAN-ADVANCE /
-# SUMMARY metadata lines. Exit 0 on a successful report (conflicts
-# included); exit 1 only on an operational error.
-#
-# Requires python3 and git — same as bin/init.
+#!/usr/bin/env python3
+"""
+claude-legal-kit sync-report — the reconciliation engine behind the /sync
+skill ("load the latest kit updates").
 
-set -euo pipefail
+A firm home does NOT contain the kit. The /sync skill first fetches the kit
+(a fresh, COMPLETE clone), then runs THIS script from inside that clone. The
+script is READ-ONLY: it inspects, classifies, and prints a report — it
+changes nothing. The skill is what applies changes, with the firm's
+permission, file by file.
 
-# ─── Resolve firm home + kit location ──────────────────────────────────────
-if [ "$#" -lt 1 ] || [ -z "${1:-}" ]; then
-  echo "usage: bin/sync-report <firm-home-dir>" >&2
-  exit 1
-fi
-FIRM="$1"
-if [ ! -d "$FIRM" ]; then
-  echo "ERROR: firm home not found: $FIRM" >&2
-  exit 1
-fi
-FIRM="$(cd "$FIRM" && pwd)"
+Usage:
+  <kit-clone>/bin/sync-report <firm-home-dir>
 
-KIT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-MANIFEST="$KIT_DIR/MANIFEST.json"
+It compares every kit-managed file (the kit.files[] entries in MANIFEST.json,
+minus opt-in) three ways:
 
-# ─── Preflight ─────────────────────────────────────────────────────────────
-for tool in python3 git; do
-  if ! command -v "$tool" >/dev/null 2>&1; then
-    echo "ERROR: bin/sync-report requires $tool — install it and re-run." >&2
-    exit 1
-  fi
-done
-if [ ! -f "$MANIFEST" ]; then
-  echo "ERROR: MANIFEST.json not found at $MANIFEST" >&2
-  exit 1
-fi
-if [ ! -f "$FIRM/.claude/foundation.json" ]; then
-  echo "ERROR: $FIRM is not a firm home — no record of which kit it tracks." >&2
-  echo "       (expected .claude/foundation.json — run bin/init there first.)" >&2
-  exit 1
-fi
-if ! git -C "$KIT_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  echo "ERROR: bin/sync-report must run from inside a kit clone (a git repo)." >&2
-  exit 1
-fi
+  base   the file in the kit at the commit the firm last loaded
+         (the firm's .claude/foundation.json -> "pinned_sha")
+  kit    the file in the kit now (this clone)
+  firm   the firm's installed copy
 
-# ─── Reconcile + report ────────────────────────────────────────────────────
-python3 - "$KIT_DIR" "$FIRM" "$MANIFEST" <<'PYEOF'
-import json, os, subprocess, sys
+and classifies the drift:
 
-kit_dir, firm_dir, manifest_path = sys.argv[1], sys.argv[2], sys.argv[3]
+  UPDATE       kit changed it, firm copy untouched      -> safe to load
+  NEW          kit added it, firm has no copy           -> safe to load
+  REMOVE       kit dropped it, firm copy untouched      -> safe to remove
+  OVERRIDE     firm changed it, kit did not             -> keep firm's copy
+  CONFLICT     BOTH changed it                          -> needs a decision
+  MISSING      kit has it, firm copy is gone            -> needs a decision
+  GONE-EDITED  kit dropped it, but firm had edited it   -> needs a decision
+  (files that match all three ways are not reported)
+
+Bootstrap files (CLAUDE.md, FIRM.md, .gitignore, foundation.json) are the
+firm's own — never kit-managed, never reported here.
+
+Output is grouped and human-readable; every data line is also TAB-separated
+— "<TOKEN><TAB><firm-path><TAB><kit-path>" — for the skill to parse,
+alongside KIT-CLONE / PINNED-SHA / HEAD-SHA / PIN-CAN-ADVANCE / SUMMARY
+metadata lines. Exit 0 on a successful report (conflicts included); exit 1
+only on an operational error.
+
+Cross-platform: pure Python standard library. Requires python3 and git.
+"""
+
+import json
+import os
+import subprocess
+import sys
+
 DEVNULL = subprocess.DEVNULL
 
 
@@ -93,7 +56,45 @@ def fail(msg):
     sys.exit(1)
 
 
-# ─ foundation.json: which kit, and the commit the firm last loaded ─
+# ── resolve firm home + kit location ────────────────────────────────────────
+args = sys.argv[1:]
+if not args or not args[0]:
+    print("usage: bin/sync-report <firm-home-dir>", file=sys.stderr)
+    sys.exit(1)
+
+firm_dir = args[0]
+if not os.path.isdir(firm_dir):
+    print("ERROR: firm home not found: %s" % firm_dir, file=sys.stderr)
+    sys.exit(1)
+firm_dir = os.path.abspath(firm_dir)
+
+kit_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+manifest_path = os.path.join(kit_dir, "MANIFEST.json")
+
+# ── preflight ───────────────────────────────────────────────────────────────
+try:
+    subprocess.check_output(["git", "--version"], stderr=DEVNULL)
+except (FileNotFoundError, subprocess.CalledProcessError):
+    print("ERROR: bin/sync-report requires git on PATH.", file=sys.stderr)
+    sys.exit(1)
+if not os.path.isfile(manifest_path):
+    print("ERROR: MANIFEST.json not found at %s" % manifest_path, file=sys.stderr)
+    sys.exit(1)
+if not os.path.isfile(os.path.join(firm_dir, ".claude", "foundation.json")):
+    print("ERROR: %s is not a firm home — no record of which kit it tracks."
+          % firm_dir, file=sys.stderr)
+    print("       (expected .claude/foundation.json — run bin/init there first.)",
+          file=sys.stderr)
+    sys.exit(1)
+try:
+    subprocess.check_output(
+        ["git", "-C", kit_dir, "rev-parse", "--is-inside-work-tree"], stderr=DEVNULL)
+except subprocess.CalledProcessError:
+    print("ERROR: bin/sync-report must run from inside a kit clone (a git repo).",
+          file=sys.stderr)
+    sys.exit(1)
+
+# ── foundation.json: which kit, and the commit the firm last loaded ─────────
 try:
     foundation = json.load(open(os.path.join(firm_dir, ".claude", "foundation.json")))
 except (OSError, ValueError) as exc:
@@ -106,14 +107,14 @@ kit_branch = kitmeta.get("branch", "(unknown)")
 last_synced = foundation.get("last_synced", "(unknown)")
 unpinned = (not pinned) or pinned == "unpinned"
 
-# ─ this clone's current version ─
+# ── this clone's current version ────────────────────────────────────────────
 try:
     head = subprocess.check_output(
         ["git", "-C", kit_dir, "rev-parse", "HEAD"], text=True).strip()
 except subprocess.CalledProcessError:
     fail("could not read the kit's current version.")
 
-# ─ the pinned commit must be reachable in this clone ─
+# ── the pinned commit must be reachable in this clone ───────────────────────
 if not unpinned:
     rc = subprocess.call(
         ["git", "-C", kit_dir, "cat-file", "-e", pinned + "^{commit}"],
@@ -122,7 +123,7 @@ if not unpinned:
         fail("this kit copy does not reach back to the version the firm last "
              "loaded (%s) — fetch the kit's full history and retry." % pinned[:12])
 
-# ─ MANIFEST: the kit-managed files (kit.files, minus opt-in) ─
+# ── MANIFEST: the kit-managed files (kit.files, minus opt-in) ───────────────
 try:
     manifest = json.load(open(manifest_path))
 except (OSError, ValueError) as exc:
@@ -133,7 +134,7 @@ entries = [(e["policy"], e["from"], e["to"])
            if e["policy"] in ("directory-mirror", "file-replace")]
 
 
-# ─ content fetchers (all return bytes, or None if absent) ─
+# ── content fetchers (all return bytes, or None if absent) ──────────────────
 def now_bytes(rel):
     p = os.path.join(kit_dir, rel)
     return open(p, "rb").read() if os.path.isfile(p) else None
@@ -155,7 +156,7 @@ def firm_bytes(rel):
     return open(p, "rb").read() if os.path.isfile(p) else None
 
 
-# ─ file enumerators ─
+# ── file enumerators ────────────────────────────────────────────────────────
 def ls_now(from_rel):
     out = subprocess.check_output(
         ["git", "-C", kit_dir, "ls-files", "-z", "--", from_rel.rstrip("/")],
@@ -186,7 +187,7 @@ def to_path(policy, from_rel, to_rel, file_rel):
     return tr + "/" + file_rel[len(fr):].lstrip("/")
 
 
-# ─ classify every managed file ─
+# ── classify every managed file ─────────────────────────────────────────────
 order = ["UPDATE", "NEW", "REMOVE", "OVERRIDE", "CONFLICT", "MISSING", "GONE-EDITED"]
 results = {s: [] for s in order}
 seen = set()
@@ -229,7 +230,7 @@ for policy, from_rel, to_rel in entries:
                 results["CONFLICT"].append((tr, fr))
         # f == b == k (untouched) or f == k (firm already converged): silent
 
-# ─ report ─
+# ── report ──────────────────────────────────────────────────────────────────
 HEADERS = {
     "UPDATE":      "Kit improvements ready to load (firm copy untouched)",
     "NEW":         "New in the kit (firm has no copy yet)",
@@ -278,4 +279,3 @@ print("Summary: " + ", ".join(
 print("PIN-CAN-ADVANCE\t%s" % ("no" if pending else "yes"))
 print("SUMMARY\t%d" % total)
 sys.exit(0)
-PYEOF

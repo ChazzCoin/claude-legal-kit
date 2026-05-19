@@ -1,25 +1,10 @@
 {
-  "$comment": "Kit-owned Claude Code settings. The SessionStart hooks run at the start of every session: the identity hook resolves the active user (session-start.sh on macOS/Linux, session-start.ps1 on Windows — paired, identical behavior), and the platform detector records the operating system in .claude/platform.json (so Claude runs the .ps1 kit scripts on Windows, the .sh scripts on macOS/Linux). A hook whose interpreter is absent on the current OS simply fails to launch and is ignored — SessionStart hooks are non-blocking, except the identity hook, which is meant to gate the session; the OS-appropriate flavor does the gating. See firm/practice-kit/conduct/roles.md and firm/practice-kit/conduct/running-scripts.md.",
+  "$comment": "Kit-owned Claude Code settings. The SessionStart hook resolves the active user at the start of every session and gates the session on an unknown user. It is session-start.js — Node.js, because Claude Code spawns it and Node is the runtime guaranteed present on every platform Claude Code runs on (see docs/ARCHITECTURE.md §10). A firm's own settings belong in .claude/settings.local.json (gitignored, machine-local), never here, so /sync can keep this current. See firm/practice-kit/conduct/roles.md.",
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
-          { "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.sh\"" }
-        ]
-      },
-      {
-        "hooks": [
-          { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.ps1\"" }
-        ]
-      },
-      {
-        "hooks": [
-          { "type": "command", "command": "sh \"${CLAUDE_PROJECT_DIR}/firm/practice-kit/scripts/detect-platform.sh\" ; exit 0" }
-        ]
-      },
-      {
-        "hooks": [
-          { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/firm/practice-kit/scripts/detect-platform.ps1\"" }
+          { "type": "command", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.js\"" }
         ]
       }
     ]

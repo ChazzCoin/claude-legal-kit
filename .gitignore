@@ -14,6 +14,10 @@
 .vscode/
 .idea/
 
+# Python bytecode — the kit's tooling is Python; never commit compiled artifacts
+__pycache__/
+*.pyc
+
 # Logs / temp
 *.log
 *.tmp

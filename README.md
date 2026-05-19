@@ -40,16 +40,16 @@ claude-legal-kit/bin/init /path/to/firm-home
 
 **Windows:**
 
-```powershell
+```bat
 git clone https://github.com/ChazzCoin/claude-legal-kit
-claude-legal-kit\bin\init.ps1 -Target C:\path\to\firm-home
+claude-legal-kit\bin\init.cmd C:\path\to\firm-home
 ```
 
-Every kit script is paired — a bash `.sh`/no-extension flavor and a PowerShell `.ps1` flavor with identical behavior — so the kit serves firms on either operating system. Run the one for your machine; see [`bin/README.md`](bin/README.md). The PowerShell ports need only `git`; the bash scripts also use `python3`.
+The kit ships **no shell scripts**. Every executable is Python (the `bin/` tooling and the practice-kit scripts) or Node.js (the SessionStart hook) — the runtimes that behave identically on macOS and Windows. The `bin/` scripts have a `python3` shebang; each also has a `.cmd` shim so Windows users can run it without naming the interpreter. Installing needs `python3` (and `git`, optionally, for the SHA pin); see [`bin/README.md`](bin/README.md).
 
-`bin/init` is non-destructive and idempotent. It reads `MANIFEST.json` and applies each file by its policy; it never overwrites a firm's own files; it stamps `.claude/foundation.json` with the kit commit it installed from. It also installs `.claude/settings.json`, whose `SessionStart` hook records the operating system in `.claude/platform.json` each session — that is how Claude knows which script flavor to run inside the firm (the binding rule is `conduct/running-scripts.md`). Running `init` again is safe.
+`bin/init` is non-destructive and idempotent. It reads `MANIFEST.json` and applies each file by its policy; it never overwrites a firm's own files; it stamps `.claude/foundation.json` with the kit commit it installed from. It also installs `.claude/settings.json`, whose `SessionStart` hook resolves the active user at the start of every session. Running `init` again is safe.
 
-After install: fill the `{{PLACEHOLDERS}}` in `CLAUDE.md` and `firm/FIRM.md`, add a file under `drives/` per storage location, copy `members/_template/` once per firm member, and run `.claude/hooks/setup-user.sh` on each person's machine so the identity hook can resolve them.
+After install: fill the `{{PLACEHOLDERS}}` in `CLAUDE.md` and `firm/FIRM.md`, add a file under `drives/` per storage location, copy `members/_template/` once per firm member, and run `.claude/hooks/setup-user.py` on each person's machine so the identity hook can resolve them.
 
 ## Sync — pull later kit updates
 
@@ -59,8 +59,8 @@ From inside the firm home, run the `/sync` skill — or just ask Claude to **"lo
 
 A firm home is usually a **private** git repository — a new member's computer can't clone it until it has been granted access. The kit handles this with a two-sided flow that never moves a private key:
 
-1. **Member side** — the new member runs [`bin/register-user`](bin/README.md) (`.sh` on macOS/Linux, `.ps1` on Windows) on their own computer. It lives in *this* public kit, so they can get it before they have any firm access. It generates an SSH key locally — the private half never leaves their machine — and prints a one-line **access code** (the public key).
-2. **Admin side** — the member sends that access code to a firm administrator, who approves it. `firm/practice-kit/scripts/register-admin` adds it to the private firm repo as a **per-member deploy key** (so members need no GitHub account, and any one member can be removed without affecting the others). This is normally driven by the **`/register-member` skill**, which keeps the whole exchange in plain English.
+1. **Member side** — the new member runs [`bin/register-user`](bin/README.md) on their own computer (on Windows, via the `register-user.cmd` shim). It lives in *this* public kit, so they can get it before they have any firm access. It generates an SSH key locally — the private half never leaves their machine — and prints a one-line **access code** (the public key).
+2. **Admin side** — the member sends that access code to a firm administrator, who approves it. `firm/practice-kit/scripts/register-admin.py` adds it to the private firm repo as a **per-member deploy key** (so members need no GitHub account, and any one member can be removed without affecting the others). This is normally driven by the **`/register-member` skill**, which keeps the whole exchange in plain English.
 3. The member runs `register-user` once more with the workspace address and their computer clones the firm repo.
 
 Only the public access code ever travels; the private key is generated where it is used and stays there. See the [`/register-member` skill](kit/firm/practice-kit/shared-library/skills/register-member/SKILL.md) for the full flow.
@@ -84,9 +84,9 @@ claude-legal-kit/
 │   ├── firm/        #   the practice-kit + practice-registry structure
 │   ├── members/     #   the per-member workspace template
 │   ├── drives/      #   the drive-registry guide
-│   └── .claude/     #   the /sync skill + the identity hooks
+│   └── .claude/     #   the /sync skill, the identity hook, the document-index tools
 ├── bootstrap/       # one-time firm files: CLAUDE.md, FIRM.md, .gitignore, foundation.json
-├── bin/             # init, check-manifest, sync-report — paired bash + PowerShell flavors
+├── bin/             # init, check-manifest, sync-report, register-user — Python, with .cmd shims
 ├── docs/            # ARCHITECTURE.md — the kit's design
 ├── CLAUDE.md        # orientation for working on the kit itself
 ├── MANIFEST.json    # authoritative inventory + install policies
@@ -96,4 +96,4 @@ claude-legal-kit/
 
 ## Status
 
-**v0.4.0 — firm-agnostic and cross-platform.** The install and sync machinery, the `/sync` skill, role-aware conduct, the identity layer, and the linking-and-tagging convention are in place; the kit names no firm and asserts no jurisdiction's law as universal, with jurisdiction-specific law in swappable modules under `jurisdictions/`. As of v0.4.0 it runs equally on Windows and macOS/Linux — every script ships a paired `.sh` and `.ps1` flavor — and a new member's computer comes online through a secure, key-never-transmitted onboarding flow. Still ahead: the first real firm deployment, and the document management layer (Phase 4, designed in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) §10). See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full design and [`CHANGELOG.md`](CHANGELOG.md) for history.
+**v0.5.0 — cross-platform, off shell, document index.** The install and sync machinery, the `/sync` skill, role-aware conduct, the identity layer, and the linking-and-tagging convention are in place; the kit names no firm and asserts no jurisdiction's law as universal, with jurisdiction-specific law in swappable modules under `jurisdictions/`. The kit ships **no shell scripts** — its tooling is Python (`bin/` and the practice-kit scripts) and Node.js (the SessionStart hook), so it runs identically on Windows and macOS/Linux; a new member's computer comes online through a secure, key-never-transmitted onboarding flow. The Phase 4 **document index engine** — the cross-platform Tier 0 crawler that builds a firm's `index.db` file catalog — is built; its management skills are next. Still ahead: the first real firm deployment, and those skills (`docs/ARCHITECTURE.md` §10). See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full design and [`CHANGELOG.md`](CHANGELOG.md) for history.

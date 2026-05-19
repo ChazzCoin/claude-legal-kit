@@ -21,8 +21,10 @@ firm/closed-matters/
 # Per-machine identity marker — which user is on this computer
 .claude/current-user
 
-# Detected operating system — re-stamped every session, differs per machine
-.claude/platform.json
+# Document index — firm data (an index of matter filenames is itself
+# sensitive); lives on the drive plane, never pushed to a remote
+.claude/tools/index/index.db
+.claude/tools/index/*.jsonl
 
 # macOS metadata
 .DS_Store
