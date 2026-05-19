@@ -1,6 +1,6 @@
 {
   "name": "claude-legal-kit",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Portable Claude Code foundation for law firms — conduct rules, rules of practice, skills, document templates, and firm structure that install into any firm's home folder and stay current through a one-way sync.",
   "source": {
     "repo": "https://github.com/ChazzCoin/claude-legal-kit",

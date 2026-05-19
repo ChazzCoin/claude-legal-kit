@@ -2,6 +2,25 @@
 
 All notable changes to the kit. Newest first.
 
+## v0.6.0 — 2026-05-18
+
+Verified identity — the identity hook now resolves users by SSH key fingerprint, not a self-asserted marker. The binding is created by the administrator at member approval time; the member cannot forge it.
+
+### Changed
+
+- **`session-start.js`** — new fingerprint-first resolution algorithm. If `~/.ssh/claude-legal-kit_ed25519.pub` is present, the hook computes its SHA256 fingerprint in-process (Node `crypto`, no shell calls) and searches `key_fingerprints[]` in `users.json`. Zero matches → hard-block ("ask admin to approve this machine"); more than one → hard-block ("directory inconsistent"); exactly one → resolved as **VERIFIED**. If no kit key is on the machine, falls back to the `.claude/current-user` marker as **ASSERTED** (admin bootstrap and development use). In both paths, `status` is now checked — inactive users are hard-blocked (this was a bug in v0.5.0 where the field was decorative). The session context carries the identity method label so Claude knows which guarantee it carries.
+- **`register-admin.py`** — new `--key <handle>`, `--name "<name>"`, and `--role <role>` arguments. After adding the GitHub deploy key, the script computes the SHA256 fingerprint from the access code, reads `members/users.json`, and either appends the fingerprint to an existing user's `key_fingerprints[]` list (additional-machine path) or creates a new user entry (new-member path). Prints a reminder to commit `users.json`. `members/users.json` schema bumped to version 2 — adds `key_fingerprints: []` per user.
+- **`bin/register-user`** — prints the SSH key fingerprint (`SHA256:...`) alongside the access code, so the administrator can verify the fingerprint matches what `register-admin.py` records.
+- **`setup-user.py`** — demoted to documented bootstrap / asserted-path fallback. Creates marker-only entries (no `key_fingerprints`) — suitable for the admin's own machine during initial setup. Adds role validation against the known role list. Clearly states that regular firm members should use the `/register-member` skill instead.
+- **`register-member` SKILL.md** — Step 1 now collects the member's short handle, full name, and role. Step 3 passes all three to `register-admin.py` via `--key`/`--name`/`--role`. New Step 3.6: commits `members/users.json` to the firm repo so every machine picks up the new fingerprint entry.
+- **`conduct/roles.md`** — "resolved, never self-asserted" paragraph rewritten. Accurately distinguishes VERIFIED (admin-registered SSH key — member cannot spoof by editing a text file) from ASSERTED (marker fallback — weaker guarantee, labeled as such).
+- **`members/README.md`** — stale `setup-user.sh` references fixed (→ `setup-user.py`). User directory description updated: `key_fingerprints[]` field, admin-authority model, `/register-member` as the normal path.
+- **`docs/ARCHITECTURE.md` §5** — full rewrite of the identity/hooks section: two resolution paths (VERIFIED / ASSERTED), admin-as-authority model, two-tier revocation (GitHub deploy key for access + `status: "inactive"` for identity), `key_fingerprints[]` schema.
+
+### Technical note — fingerprint format
+
+Both sides produce `SHA256:<base64-no-trailing-padding>`, matching `ssh-keygen -lf` output. Node's `digest("base64")` was padded; the hook strips trailing `=` with `.replace(/=+$/, "")` so the computed value always matches what Python's `hashlib` writes to `users.json`.
+
 ## v0.5.0 — 2026-05-18
 
 Phase 4 — the document management layer (the Tier 0 engine), and the kit-wide move off shell scripts to a cross-platform runtime split. Design of record: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) §10.
