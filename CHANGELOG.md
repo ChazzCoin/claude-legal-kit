@@ -2,6 +2,29 @@
 
 All notable changes to the kit. Newest first.
 
+## v0.7.0 — 2026-05-19
+
+The firm board — Phase 5, v1. A small LAN web page sized for a TV viewed from across a room. It reads the firm's existing inbox folders (`members/<key>/inbox/` and `members/shared-inbox/`) and renders them large and legible, so a TV in each member's office can sit on their personal view and show new messages within ~60s of being pushed.
+
+The key design move: the board is a new *view* of the existing inbox primitive — it adds no new write path. Sending a message is the same as it always was (drop a file in someone's inbox, push). The TV is just a browser pointed at one URL.
+
+### Added
+
+- **`kit/.claude/tools/board/`** — the engine. `render.py` generates HTML for the three views (shared, per-member, directory); `serve.py` is a tiny `http.server`-based LAN web server that re-renders on each request and runs `git pull --ff-only` every 60s so notes pushed from members' laptops appear without anyone touching the host. Pure Python standard library, no third-party packages. End-to-end smoke-tested: routes 200, defensive 404 on path-traversal, status JSON for health probes.
+- **`/setup-board-host` skill** — run once on the always-on Mac. Verifies the environment, picks a port, writes `~/Library/LaunchAgents/com.firm.board.plist`, `launchctl load`s it, confirms `/status` responds, prints the URLs. Idempotent — re-running repairs the install. macOS only for v1; the engine itself is OS-agnostic.
+- **`/setup-tv` skill** — run by a member on their laptop. Walks them through pointing a TV's browser (Chromecast / Fire Stick / Apple TV / smart TV) at their personal URL, then verifies the TV connected by watching the host's access log. Honest about the one irreducible manual step (typing the URL into the TV) and seamless after.
+
+### Design notes
+
+- **Restrained palette** — deep navy background, warm off-white text, muted gold accents. System serif headers, system sans body. Looks like law-firm letterhead, not a gamer dashboard; easier on eyes from across a room; gentler on OLED panels.
+- **Sized for 15 feet** — 28px body, 56px firm name. Necessary, not large.
+- **No JS framework, no images, no external requests** — ~15 lines of vanilla JS for the live clock; everything else is HTML + CSS. `<meta refresh content="60">` is the auto-update mechanism; `Cache-Control: no-store` so TVs sitting on one URL for days don't silently stale.
+- **What's not on the board** — matter content, client documents, privileged work product. TVs are visible; the board carries inbox messages and (when those data sources land) calendar / birthdays. The design enforces this by what it reads.
+
+### Note
+
+v1 reads only inbox folders. Calendar / deadlines, client birthdays from `firm/clients/`, matter status — those plug in as new sections when the spine lands (`firm/clients/`, deadline tracking, the document index's matter view). The renderer is structured so each new feed is a section, not a rewrite.
+
 ## v0.6.0 — 2026-05-18
 
 Verified identity — the identity hook now resolves users by SSH key fingerprint, not a self-asserted marker. The binding is created by the administrator at member approval time; the member cannot forge it.
